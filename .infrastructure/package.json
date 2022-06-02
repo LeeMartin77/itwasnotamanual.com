@@ -8,7 +8,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "postdeploy:cleardistribution": "aws cloudfront create-invalidation --paths '/*' --distribution-id "
   },
   "devDependencies": {
     "@types/jest": "^27.5.0",
