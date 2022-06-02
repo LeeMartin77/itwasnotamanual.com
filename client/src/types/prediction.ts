@@ -7,7 +7,7 @@ export interface Prediction {
   wiki: string
   // TODO: We should populate this from wikipedia in the lambda
   wiki_title: string
-  quote: string
+  quote?: string
 }
 
 

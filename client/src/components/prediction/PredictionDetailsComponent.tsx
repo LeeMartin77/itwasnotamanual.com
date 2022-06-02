@@ -40,9 +40,8 @@ export function PredictionDetailsComponent({
         <span>Error</span>
       ) : (
         <div>
-          <p>The</p>
           <h1>{predictionDetail.subject.title}</h1>
-          <p>was in</p>
+          <p>in</p>
           <h1>{predictionDetail.book.title}</h1>
           <p>
             Written by{" "}
@@ -50,7 +49,7 @@ export function PredictionDetailsComponent({
               .map((x) => x.personal_name)
               .join(", ")}
           </p>
-          <p>{predictionDetail.quote}</p>
+          { predictionDetail.quote && <p>{predictionDetail.quote}</p>}
           <img
             src={predictionDetail.book.cover_url}
             alt={predictionDetail.book.title + " Cover"}
