@@ -1,27 +1,38 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface Prediction {
-  openlibrary: string
+  id: string
+  url: string
+  openlibraryid: string
+  // TODO: We should populate this from openlibrary in the lambda
+  book_title: string
   wiki: string
+  // TODO: We should populate this from wikipedia in the lambda
+  wiki_title: string
   quote: string
 }
 
 const fakePrediction: Prediction = {
-  openlibrary: "OL1168083W",
+  id: "7e476c02-8aa6-4676-bd87-e24ca27710a8",
+  // TODO: How do we generate this
+  url: "nineteen-eighty-four-smart-speaker",
+  openlibraryid: "OL1168083W",
+  book_title: "Nineteen Eighty-Four",
   wiki: "Smart_speaker",
+  wiki_title: "Smart speaker",
   quote: "He thought of the telescreen with its never-sleeping ear. They could spy upon you night and day, but if you kept your head, you could still outwit them."
 }
 
 interface PredictionDetail extends Prediction {
   book: {
-    cover_url: string
+    cover_url?: string
     title: string
     authors: { personal_name: string }[]
     publish_date: string
   }
   thing: {
     title: string
-    image_url: string
+    image_url?: string
   }
 }
 
@@ -98,66 +109,69 @@ interface OpenLibraryAuthorResponse {
   }
 }
 
+async function getPredictionDetails(prediction: Prediction): Promise<PredictionDetail> {
+  let loadedDetails: PredictionDetail = {
+    ...prediction,
+    book: {
+      cover_url: '',
+      title: '',
+      authors: [],
+      publish_date: ''
+    },
+    thing: {
+      title: '',
+      image_url: ''
+    }
+  }
+  // TODO: I mean there is a lot to do but rather than a massive chain we could
+  // do some stuff concurrently
 
-export function PredictionDetails() {
+  const data: OpenLibraryBooksResponse = await (await fetch(openlibraryWorksApi + prediction.openlibraryid + ".json")).json()
+  if (data.covers.length > 0) {
+    loadedDetails.book.cover_url = coverUrl + data.covers[0] + "-M.jpg";
+  }
+  loadedDetails.book.title = data.title
+  loadedDetails.book.publish_date = data.publish_date
+
+  // TODO: We'll need to change this to load many, but one will do for now
+  const author_data: OpenLibraryAuthorResponse = await(await fetch(openlibrarybase + data.authors[0].author.key + '.json')).json()
+  
+  loadedDetails.book.authors.push({ personal_name: author_data.personal_name})
+
+  const wikidata: WikipediaSummaryResponse = await(await fetch(wikipediaSummaryUrl + prediction.wiki)).json()
+  loadedDetails.thing.title = wikidata.title
+
+  const wikimedia: WikipediaMediaResponse = await(await fetch(wikipediaMediaUrl + prediction.wiki)).json()
+
+  if (wikimedia.items.length > 0) {
+    const featured = wikimedia.items.find(x => x.leadImage)
+    // TODO: Should probably check scalings too...
+    if (featured) {
+      loadedDetails.thing.image_url = "https:" + featured.srcset[0].src
+    } else {
+      loadedDetails.thing.image_url = "https:" + wikimedia.items[0].srcset[0].src
+    }
+  }
+
+  return loadedDetails;
+}
+
+interface PredictionDetailsProps {
+  prediction?: Prediction
+  fnGetPredictionDetails?: (prediction: Prediction) => Promise<PredictionDetail>
+}
+
+export function PredictionDetailsComponent({ prediction = fakePrediction, fnGetPredictionDetails = getPredictionDetails } : PredictionDetailsProps) {
   const [predictionDetail, setPredictionDetail] = useState<PredictionDetail | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
   useEffect(() => {
-    let loadedDetails: PredictionDetail = {
-      ...fakePrediction,
-      book: {
-        cover_url: '',
-        title: '',
-        authors: [],
-        publish_date: ''
-      },
-      thing: {
-        title: '',
-        image_url: ''
-      }
-    }
-    // TODO: I mean there is a lot to do but rather than a massive chain we could
-    // do some stuff concurrently
-    fetch(openlibraryWorksApi + fakePrediction.openlibrary + ".json").then(response => {
-      response.json().then((data: OpenLibraryBooksResponse) => {
-        if (data.covers.length > 0) {
-          loadedDetails.book.cover_url = coverUrl + data.covers[0] + "-M.jpg";
-        }
-        loadedDetails.book.title = data.title
-        loadedDetails.book.publish_date = data.publish_date
-        // TODO: We'll need to change this to load many, but one will do for now
-        fetch(openlibrarybase + data.authors[0].author.key + '.json').then(response => {
-          response.json().then((author_data: OpenLibraryAuthorResponse) => {
-            loadedDetails.book.authors.push({ personal_name: author_data.personal_name})
-            fetch(wikipediaSummaryUrl + fakePrediction.wiki).then(response => {
-              response.json().then((wikidata: WikipediaSummaryResponse) => {
-                loadedDetails.thing.title = wikidata.title
-                fetch(wikipediaMediaUrl + fakePrediction.wiki).then(response => {
-                  response.json().then((data: WikipediaMediaResponse) => {
-                    if (data.items.length > 0) {
-                      const featured = data.items.find(x => x.leadImage)
-                      // TODO: Should probably check scalings too...
-                      if (featured) {
-                        loadedDetails.thing.image_url = "https:" + featured.srcset[0].src
-                      } else {
-                        loadedDetails.thing.image_url = "https:" + data.items[0].srcset[0].src
-                      }
-                    }
-                    setPredictionDetail(loadedDetails)
-                    setLoading(false)
-                  })
-                })
-              })
-            })
-          })
-        })
-      })
-    })
-  }, [setPredictionDetail, setLoading]);
+      fnGetPredictionDetails(prediction).then(details => { setPredictionDetail(details); setLoading(false);}).catch(() => setError(true))
+  }, [fnGetPredictionDetails, setPredictionDetail, setLoading, setError, prediction]);
   return (
     <div>
       {loading ? <span>Loading...</span> : 
-       !predictionDetail ? <span>Error</span> : 
+       error || !predictionDetail ? <span>Error</span> : 
         <div>
           <h1>{predictionDetail.book.authors[0].personal_name}</h1>
           <p>predicted the</p>
