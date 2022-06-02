@@ -5,14 +5,16 @@ import {
   useParams,
   Routes,
   BrowserRouter,
-  useNavigate,
+  Link,
+  useNavigate
 } from "react-router-dom";
 import { PredictionDetailsComponent } from "./components/prediction/PredictionDetailsComponent";
 import { Prediction } from "./types/prediction";
 import { PredictionListComponent } from "./components/prediction/PredictionListComponent";
-import { getPredictionFromUrl, getPredictions } from "./functions/getPredictions";
+import { getPredictionFromUrl, getPredictions, getRandomPrediction } from "./functions/getPredictions";
 import { ThemeProvider } from "@emotion/react";
-import { Container, createTheme, CssBaseline, CircularProgress, Alert } from "@mui/material";
+import { Container, createTheme, CssBaseline, CircularProgress, Alert, BottomNavigation, BottomNavigationAction } from "@mui/material";
+import { Shuffle, FormatListBulleted } from '@mui/icons-material';
 
 function PredictionListRouteChildComponent() {
   const [predictions, setPredictions] = useState<Prediction[]>([]);
@@ -68,6 +70,31 @@ function PredictionRouteChildComponent() {
   );
 }
 
+function PredictionRandomRouteChildComponent() {
+  const [prediction, setPrediction] = useState<Prediction | undefined>(
+    undefined
+  );
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
+
+  useEffect(() => {
+    getRandomPrediction()
+      .then((pred) => {
+        setPrediction(pred);
+        setLoading(false);
+      })
+      .catch(() => setError(true));
+  }, [setPrediction, setLoading, setError]);
+
+  return !loading && !error && prediction ? (
+    <PredictionDetailsComponent prediction={prediction} random={true} />
+  ) : error ? (
+    <Alert severity="error">Error loading prediction</Alert>
+  ) : (
+    <CircularProgress />
+  );
+}
+
 const theme = createTheme({
   palette: {
     mode: 'dark',
@@ -85,7 +112,8 @@ function App() {
               path="/prediction/:predictionUrl"
               element={<PredictionRouteChildComponent />}
             />
-            <Route path="/" element={<PredictionListRouteChildComponent />} />
+            <Route path="/predictions" element={<PredictionListRouteChildComponent />} />
+            <Route path="/" element={<PredictionRandomRouteChildComponent />} />
             <Route
               path="*"
               element={
@@ -95,6 +123,10 @@ function App() {
               }
             />
           </Routes>
+          <BottomNavigation showLabels>
+            <BottomNavigationAction label="Random" component={Link} to={"/"} icon={<Shuffle />} />
+            <BottomNavigationAction label="List" component={Link} to={"/predictions"} icon={<FormatListBulleted />} />
+          </BottomNavigation>
         </BrowserRouter>
       </Container>
     </ThemeProvider>

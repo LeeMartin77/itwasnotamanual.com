@@ -8,6 +8,7 @@ import { Alert, Box, Button, Card, CardActions, CardContent, CircularProgress, T
 
 interface PredictionDetailsProps {
   prediction: Prediction;
+  random?: boolean;
   fnGetPredictionDetails?: (
     prediction: Prediction
   ) => Promise<PredictionDetail>;
@@ -15,6 +16,7 @@ interface PredictionDetailsProps {
 
 export function PredictionDetailsComponent({
   prediction,
+  random = false,
   fnGetPredictionDetails = getPredictionDetails,
 }: PredictionDetailsProps) {
   const navigate = useNavigate();
@@ -74,7 +76,10 @@ export function PredictionDetailsComponent({
       }
       </CardContent>
       <CardActions>
-        <Button size="small" onClick={() => navigate(-1)}>Go Back</Button>
+        {random ? 
+          <Button onClick={() => navigate("/prediction/" + prediction.url)}>Go to Page</Button> : 
+          <Button onClick={() => navigate(-1)}>Go Back</Button>
+        }
       </CardActions>
     </Card>
   );

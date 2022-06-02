@@ -6,6 +6,13 @@ export async function getPredictions(): Promise<Prediction[]> {
   return fakePredictions;
 }
 
+export async function getRandomPrediction(): Promise<Prediction> {
+  // TODO: This will be on a server
+  const prediction = fakePredictions[Math.floor(Math.random() * fakePredictions.length)];
+  console.log(prediction)
+  return prediction;
+}
+
 export async function getPredictionFromUrl(
   predictionUrl: string
 ): Promise<Prediction> {
