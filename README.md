@@ -10,7 +10,7 @@ Each entry should be:
 - "Private" ID
 - Wikipedia link
   - This represents "Real life" - We'll also grab details on the fly here from the [API](https://en.wikipedia.org/api/rest_v1/)
-- ISBN Number
+- OpenLibrary Number
   - This is the fiction - we'll look up details on the fly from [OpenLibrary](https://openlibrary.org/dev/docs/api/books)
 - Quote
   - Free text, limited to 280 characters (a-la twitter)
@@ -18,6 +18,18 @@ Each entry should be:
 We'll store these in Dynamo, and serve them via a lambda API, with a pretty aggressive CF distribution in front of it.
 
 The site itself will be a React app
+
+### Planned sitemap:
+- `/`: Random prediction (reroll button to start, later make it the start of ranking)
+  - Ranking should be "Yes", "No", "Requote", "Report"
+  - When the user has ranked all predictions, replace Rank buttons with "Random" and "List"
+- `/predictions`: Ranked list of predictions
+- `/prediction/:url`: A single book/subject prediction
+- `/submit-prediction`: Interface to add a new prediction
+- `/books`: List of books by number of predictions
+- `/book/:url`: A single book with a list of it's predictions
+- `/subjects`: List of subjects by number of books containing them
+- `/subject/:url`: Single subject with list of books containing subject
 
 ### Ideas to add
 
@@ -29,7 +41,7 @@ The site itself will be a React app
 - User moderation as a Feature
   - *** At this point we'll need cookies ***
   - Just a unique user/machine ID - we won't bother giving them identities
-  - Users can vote (swipe left or right) on entries
+  - Users can vote (swipe left or right in future?) on entries
   - This should be done using token voting to try and avoid abuse
     - User requests to vote
     - User gets a response with a token, and a ~~random~~ algorithmic link/isbn/quote they haven't voted on
