@@ -104,7 +104,7 @@ const theme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main">
+      <Container component="main" maxWidth={"xs"}>
         <CssBaseline />
         <BrowserRouter>
           <Routes>
