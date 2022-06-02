@@ -12,7 +12,7 @@ import { Prediction } from "./types/prediction";
 import { PredictionListComponent } from "./components/prediction/PredictionListComponent";
 import { getPredictionFromUrl, getPredictions } from "./functions/getPredictions";
 import { ThemeProvider } from "@emotion/react";
-import { Container, createTheme, CssBaseline } from "@mui/material";
+import { Container, createTheme, CssBaseline, CircularProgress, Alert } from "@mui/material";
 
 function PredictionListRouteChildComponent() {
   const [predictions, setPredictions] = useState<Prediction[]>([]);
@@ -31,9 +31,9 @@ function PredictionListRouteChildComponent() {
   return !loading && !error && predictions ? (
     <PredictionListComponent predictions={predictions} />
   ) : error ? (
-    <div>Error!</div>
+    <Alert severity="error">Error loading predictions</Alert>
   ) : (
-    <div>Loading...</div>
+    <CircularProgress />
   );
 }
 
@@ -62,9 +62,9 @@ function PredictionRouteChildComponent() {
   return !loading && !error && prediction ? (
     <PredictionDetailsComponent prediction={prediction} />
   ) : error ? (
-    <div>Error!</div>
+    <Alert severity="error">Error loading prediction</Alert>
   ) : (
-    <div>Loading...</div>
+    <CircularProgress />
   );
 }
 

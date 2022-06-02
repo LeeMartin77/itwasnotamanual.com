@@ -1,5 +1,6 @@
 import { Prediction } from "../../types/prediction";
-import { PredictionSummaryComponent } from "./PredictionSummaryComponent";
+import { PredictionListItemComponent } from "./PredictionListItemComponent";
+import { List } from '@mui/material';
 
 export function PredictionListComponent({
   predictions,
@@ -7,10 +8,10 @@ export function PredictionListComponent({
   predictions: Prediction[];
 }) {
   return (
-    <>
-      {predictions.map((pred) => (
-        <PredictionSummaryComponent key={pred.id} prediction={pred} />
+    <List>
+      {predictions.map((pred, i) => (
+          <PredictionListItemComponent key={pred.id} prediction={pred} />
       ))}
-    </>
+    </List>
   );
 }

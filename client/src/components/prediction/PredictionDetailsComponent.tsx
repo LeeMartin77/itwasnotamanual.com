@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
+import {
+useNavigate,
+} from "react-router-dom";
 import { getPredictionDetails } from "../../functions/getPredictionDetails";
 import { Prediction, PredictionDetail } from "../../types/prediction";
+import { Alert, Box, Button, Card, CardActions, CardContent, CircularProgress, Typography } from '@mui/material';
 
 interface PredictionDetailsProps {
   prediction: Prediction;
@@ -13,11 +17,13 @@ export function PredictionDetailsComponent({
   prediction,
   fnGetPredictionDetails = getPredictionDetails,
 }: PredictionDetailsProps) {
+  const navigate = useNavigate();
   const [predictionDetail, setPredictionDetail] = useState<
     PredictionDetail | undefined
   >(undefined);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
+  
   useEffect(() => {
     fnGetPredictionDetails(prediction)
       .then((details) => {
@@ -33,33 +39,43 @@ export function PredictionDetailsComponent({
     prediction,
   ]);
   return (
-    <div>
-      {loading ? (
-        <span>Loading...</span>
-      ) : error || !predictionDetail ? (
-        <span>Error</span>
-      ) : (
-        <div>
-          <h1>{predictionDetail.subject.title}</h1>
-          <p>in</p>
-          <h1>{predictionDetail.book.title}</h1>
-          <p>
+    <Card>
+      <CardContent>
+          <h1>{prediction.wiki_title} in {prediction.book_title}</h1>
+      {loading && <CircularProgress />}
+      {!loading && error && <Alert severity="error">Error loading details</Alert>}
+      {!loading && !error && predictionDetail && <>
+          <h4>
             Written by{" "}
             {predictionDetail.book.authors
               .map((x) => x.personal_name)
               .join(", ")}
-          </p>
-          { predictionDetail.quote && <p>{predictionDetail.quote}</p>}
-          <img
+          </h4>
+          { predictionDetail.quote && <Typography variant="body2">{predictionDetail.quote}</Typography>}
+          <Box
+            component="img"
+            sx={{
+              maxHeight: { xs: 233, md: 167 },
+              maxWidth: { xs: 350, md: 250 },
+            }}
             src={predictionDetail.book.cover_url}
             alt={predictionDetail.book.title + " Cover"}
           />
-          <img
+          <Box
+            component="img"
+            sx={{
+              maxHeight: { xs: 233, md: 167 },
+              maxWidth: { xs: 350, md: 250 },
+            }}
             src={predictionDetail.subject.image_url}
             alt={predictionDetail.subject.title + " Image"}
           />
-        </div>
-      )}
-    </div>
+          </>
+      }
+      </CardContent>
+      <CardActions>
+        <Button size="small" onClick={() => navigate(-1)}>Go Back</Button>
+      </CardActions>
+    </Card>
   );
 }
