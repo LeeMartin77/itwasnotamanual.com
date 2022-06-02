@@ -11,6 +11,8 @@ import { PredictionDetailsComponent } from "./components/prediction/PredictionDe
 import { Prediction } from "./types/prediction";
 import { PredictionListComponent } from "./components/prediction/PredictionListComponent";
 import { getPredictionFromUrl, getPredictions } from "./functions/getPredictions";
+import { ThemeProvider } from "@emotion/react";
+import { Container, createTheme, CssBaseline } from "@mui/material";
 
 function PredictionListRouteChildComponent() {
   const [predictions, setPredictions] = useState<Prediction[]>([]);
@@ -66,27 +68,36 @@ function PredictionRouteChildComponent() {
   );
 }
 
+const theme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
+
 function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/prediction/:predictionUrl"
-            element={<PredictionRouteChildComponent />}
-          />
-          <Route path="/" element={<PredictionListRouteChildComponent />} />
-          <Route
-            path="*"
-            element={
-              <main style={{ padding: "1rem" }}>
-                <p>There's nothing here!</p>
-              </main>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <ThemeProvider theme={theme}>
+      <Container component="main">
+        <CssBaseline />
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/prediction/:predictionUrl"
+              element={<PredictionRouteChildComponent />}
+            />
+            <Route path="/" element={<PredictionListRouteChildComponent />} />
+            <Route
+              path="*"
+              element={
+                <main style={{ padding: "1rem" }}>
+                  <p>There's nothing here!</p>
+                </main>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </Container>
+    </ThemeProvider>
   );
 }
 
