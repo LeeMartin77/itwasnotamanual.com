@@ -42,7 +42,7 @@ export class FrontendInfrastructureStack extends Stack {
     const edgeFunction = new cloudfront.experimental.EdgeFunction(this, 'IndexHtmlRedirectFunction', {
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: 'slashDirector.handler',
-      code: lambda.Code.fromAsset('./lambdas'),
+      code: lambda.Code.fromAsset('./edgeLambdas'),
     });
 
     const cfDist = new cloudfront.Distribution(this, 'itwasntamanualcomDistribution', {
