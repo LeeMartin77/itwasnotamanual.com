@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { getPredictionDetails } from '../functions/getPredictionDetails';
-import { Prediction, PredictionDetail } from '../types/prediction';
+import { getPredictionDetails } from '../../functions/getPredictionDetails';
+import { Prediction, PredictionDetail } from '../../types/prediction';
 
 interface PredictionDetailsProps {
   prediction: Prediction

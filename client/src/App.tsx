@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
-import { PredictionDetailsComponent } from './components/PredictionDetailsComponent';
+import { PredictionDetailsComponent } from './components/prediction/PredictionDetailsComponent';
+import { PredictionSummaryComponent } from './components/prediction/PredictionSummaryComponent';
 import { Prediction } from './types/prediction';
 
 
@@ -20,6 +21,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <PredictionSummaryComponent prediction={fakePrediction} />
         <PredictionDetailsComponent prediction={fakePrediction} />
       </header>
     </div>
