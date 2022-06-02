@@ -11,7 +11,7 @@ import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import { OriginAccessIdentity } from 'aws-cdk-lib/aws-cloudfront';
 import * as lambda from 'aws-cdk-lib/aws-lambda'
 
-export class InfrastructureStack extends Stack {
+export class FrontendInfrastructureStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
@@ -82,7 +82,7 @@ export class InfrastructureStack extends Stack {
       recordNames: ['itwasntamanual.com'],
       targetDomain: 'www.itwasntamanual.com'
     })
-
-    new cdk.CfnOutput(this, 'frontendCloudfrontDistributionId', { value: cfDist.distributionId });
+    
+    new cdk.CfnOutput(this, 'frontendCloudfrontDistributionId', { value: cfDist.distributionId, exportName: "itwasntamanualDistributionId" });
   }
 }
