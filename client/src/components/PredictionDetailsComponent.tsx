@@ -25,8 +25,8 @@ export function PredictionDetailsComponent({ prediction, fnGetPredictionDetails 
           <h1>{predictionDetail.book.title}</h1>
           <p>Written by {predictionDetail.book.authors.map(x => x.personal_name).join(', ')}</p>
           <p>{predictionDetail.quote}</p>
-          <img src={predictionDetail.book.cover_url} alt={predictionDetail.book.title+ " Cover"} />
-          <img src={predictionDetail.subject.image_url} alt={predictionDetail.subject.title+ " Image"} />
+          <img src={predictionDetail.book.cover_url} alt={predictionDetail.book.title + " Cover"} />
+          <img src={predictionDetail.subject.image_url} alt={predictionDetail.subject.title + " Image"} />
         </div>}
     </div>
   );
