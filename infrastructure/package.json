@@ -10,7 +10,9 @@
     "test": "jest",
     "cdk": "cdk",
     "cdk:local": "sam local start-api -t ./cdk.out/APIStack.template.json -p 3123",
-    "postdeploy:cleardistribution": "aws cloudfront create-invalidation --paths '/*' --distribution-id "
+    "cdk:deploy": "cdk deploy --outputs-file ./cdk.out/outputs.json --all",
+    "postcdk:deploy": "npm run cleardist $(cat ./cdk.out/outputs.json | jq -r .APIStack.ApiCloudfrontDistributionId) && npm run cleardist $(cat ./cdk.out/outputs.json | jq -r .InfrastructureStack.frontendCloudfrontDistributionId)",
+    "cleardist": "AWS_PAGER=\"\" aws cloudfront create-invalidation --paths '/*' --distribution-id "
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.97",
