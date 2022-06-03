@@ -39,6 +39,14 @@ export class APIStack extends Stack {
       certificate: backingCertificate
     })
 
+    const corsMethods = [
+      CorsHttpMethod.OPTIONS,
+      CorsHttpMethod.GET,
+      CorsHttpMethod.POST,
+    ]
+
+    const corsOrigins = ['https://www.itwasntamanual.com', 'https://itwasntamanual.com']
+
     const httpApi = new HttpApi(this, "itwasntamanualcomLambdaApi", {
       description: 'ItWasntAManual Http Api',
       defaultDomainMapping: {
@@ -51,16 +59,9 @@ export class APIStack extends Stack {
           'Authorization',
           'X-Api-Key',
         ],
-        allowMethods: [
-          CorsHttpMethod.OPTIONS,
-          CorsHttpMethod.GET,
-          CorsHttpMethod.POST,
-          CorsHttpMethod.PUT,
-          CorsHttpMethod.PATCH,
-          CorsHttpMethod.DELETE,
-        ],
+        allowMethods: corsMethods,
+        allowOrigins: corsOrigins,
         allowCredentials: true,
-        allowOrigins: ['https://www.itwasntamanual.com', 'https://itwasntamanual.com'],
       },
     });
 
@@ -103,12 +104,23 @@ export class APIStack extends Stack {
       defaultTtl: cdk.Duration.minutes(30),
     })
 
+    const responseHeadersPolicy = new cloudfront.ResponseHeadersPolicy(this, 'CloudfrontCorsHeaders', {
+      corsBehavior: {
+        accessControlAllowMethods: corsMethods,
+        accessControlAllowOrigins: corsOrigins,
+        accessControlAllowCredentials: false,
+        accessControlAllowHeaders: ['*'],
+        originOverride: false
+      }
+    }); 
+
     const cfDist = new cloudfront.Distribution(this, 'itwasntamanualcomDistribution', {
       defaultBehavior: { 
-          origin: new origins.HttpOrigin(backingApiDomain),
-          viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          cachePolicy
-        },
+        origin: new origins.HttpOrigin(backingApiDomain),
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        cachePolicy,
+        responseHeadersPolicy
+      },
       certificate: certificate,
       domainNames: [domainName]
     });
