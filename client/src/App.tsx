@@ -5,7 +5,6 @@ import {
   useParams,
   Routes,
   BrowserRouter,
-  Link,
   useNavigate
 } from "react-router-dom";
 import { PredictionDetailsComponent } from "./components/prediction/PredictionDetailsComponent";
@@ -13,8 +12,8 @@ import { Prediction } from "../../types/prediction";
 import { PredictionListComponent } from "./components/prediction/PredictionListComponent";
 import { getPredictionFromUrl, getPredictions, getRandomPrediction } from "./functions/getPredictions";
 import { ThemeProvider } from "@emotion/react";
-import { Container, createTheme, CssBaseline, CircularProgress, Alert, BottomNavigation, BottomNavigationAction } from "@mui/material";
-import { Shuffle, FormatListBulleted } from '@mui/icons-material';
+import { Container, createTheme, CssBaseline, CircularProgress, Alert } from "@mui/material";
+import { BottomNavigationComponent } from "./components/navigation/BottomNavigationComponent";
 
 function PredictionListRouteChildComponent() {
   const [predictions, setPredictions] = useState<Prediction[]>([]);
@@ -104,31 +103,28 @@ const theme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth={"xs"}>
         <CssBaseline />
         <BrowserRouter>
-          <Routes>
-            <Route
-              path="/prediction/:predictionUrl"
-              element={<PredictionRouteChildComponent />}
-            />
-            <Route path="/predictions" element={<PredictionListRouteChildComponent />} />
-            <Route path="/" element={<PredictionRandomRouteChildComponent />} />
-            <Route
-              path="*"
-              element={
-                <main style={{ padding: "1rem" }}>
-                  <p>There's nothing here!</p>
-                </main>
-              }
-            />
-          </Routes>
-          <BottomNavigation showLabels>
-            <BottomNavigationAction label="Random" component={Link} to={"/"} icon={<Shuffle />} />
-            <BottomNavigationAction label="List" component={Link} to={"/predictions"} icon={<FormatListBulleted />} />
-          </BottomNavigation>
+          <Container component="main" maxWidth={"xs"} className="main-container">
+            <Routes>
+              <Route
+                path="/prediction/:predictionUrl"
+                element={<PredictionRouteChildComponent />}
+              />
+              <Route path="/predictions" element={<PredictionListRouteChildComponent />} />
+              <Route path="/" element={<PredictionRandomRouteChildComponent />} />
+              <Route
+                path="*"
+                element={
+                  <main style={{ padding: "1rem" }}>
+                    <p>There's nothing here!</p>
+                  </main>
+                }
+              />
+            </Routes>
+          </Container>
+          <BottomNavigationComponent />
         </BrowserRouter>
-      </Container>
     </ThemeProvider>
   );
 }
