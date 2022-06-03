@@ -13,7 +13,7 @@ export const fakePredictions: Prediction[] = [
       "Winston kept his back turned to the telescreen. It was safer, though, as he well knew, even a back can be revealing.",
   },
   {
-    id: "7e476c02-8aa6-4676-bd87-e24ca27710a8",
+    id: "7e476c03-8aa6-4676-bd87-e24ca27710a8",
     // TODO: How do we generate this
     url: "nineteen-eighty-four-smart-speaker",
     openlibraryid: "OL1168083W",
