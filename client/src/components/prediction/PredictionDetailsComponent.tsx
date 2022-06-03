@@ -3,7 +3,7 @@ import {
 useNavigate,
 } from "react-router-dom";
 import { getPredictionDetails } from "../../functions/getPredictionDetails";
-import { Prediction, PredictionDetail } from "../../types/prediction";
+import { Prediction, PredictionDetail } from "../../../../types/prediction";
 import { Alert, Box, Button, Card, CardActions, CardContent, CircularProgress, Typography } from '@mui/material';
 
 interface PredictionDetailsProps {

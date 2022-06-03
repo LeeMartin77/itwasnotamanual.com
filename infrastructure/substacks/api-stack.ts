@@ -18,6 +18,7 @@ import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as path from 'path';
 import { RecordTarget } from 'aws-cdk-lib/aws-route53';
 import { ApiGatewayv2DomainProperties } from 'aws-cdk-lib/aws-route53-targets';
+import { corsOrigins } from '../util/configuration';
 
 export class APIStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -45,8 +46,6 @@ export class APIStack extends Stack {
       CorsHttpMethod.POST,
     ]
 
-    const corsOrigins = ['https://www.itwasntamanual.com', 'https://itwasntamanual.com']
-
     const httpApi = new HttpApi(this, "itwasntamanualcomLambdaApi", {
       description: 'ItWasntAManual Http Api',
       defaultDomainMapping: {
@@ -71,24 +70,47 @@ export class APIStack extends Stack {
       target: RecordTarget.fromAlias(new ApiGatewayv2DomainProperties(backingDomainName.regionalDomainName, backingDomainName.regionalHostedZoneId))
     });
 
-    const getPredictionsLambda = new NodejsFunction(this, "itwasntamanualGetPredictionsLambda", {
-      runtime: lambda.Runtime.NODEJS_16_X,
-      handler: 'main',
-      entry: path.join(__dirname, '..', 'lambdas', 'getPredictions.ts'),
-      timeout: cdk.Duration.seconds(5),
-      memorySize: 256,
-      bundling: {
-        externalModules: ['aws-sdk'],
-      }
-    })
+    const lambdas = [
+      {
+        handler: 'main',
+        lambdaFile: 'getPredictions.ts',
+        endpointPath: '/predictions',
+        methods: [HttpMethod.GET]
+      },
+      {
+        handler: 'main',
+        lambdaFile: 'getPredictionByUrl.ts',
+        endpointPath: '/prediction/{predictionUrl}',
+        methods: [HttpMethod.GET]
+      },
+      {
+        handler: 'main',
+        lambdaFile: 'getRandomPrediction.ts',
+        endpointPath: '/prediction/random',
+        methods: [HttpMethod.GET]
+      },
+    ]
 
-    httpApi.addRoutes({
-      path: '/predictions',
-      methods: [HttpMethod.GET],
-      integration: new HttpLambdaIntegration(
-        'get-predictions-integration',
-        getPredictionsLambda
-      )
+    lambdas.forEach(({handler, lambdaFile, endpointPath, methods}) => {
+      const lambdaFunction = new NodejsFunction(this, "itwasntamanual"+ methods.join()+endpointPath, {
+        runtime: lambda.Runtime.NODEJS_16_X,
+        handler,
+        entry: path.join(__dirname, '..', 'lambdas', lambdaFile),
+        timeout: cdk.Duration.seconds(5),
+        memorySize: 256,
+        bundling: {
+          externalModules: ['aws-sdk'],
+        }
+      })
+  
+      httpApi.addRoutes({
+        path: endpointPath,
+        methods: methods,
+        integration: new HttpLambdaIntegration(
+          endpointPath,
+          lambdaFunction
+        )
+      })  
     })
 
     const domainName = `api.itwasntamanual.com`
@@ -110,7 +132,7 @@ export class APIStack extends Stack {
         accessControlAllowOrigins: corsOrigins,
         accessControlAllowCredentials: false,
         accessControlAllowHeaders: ['*'],
-        originOverride: false
+        originOverride: true
       }
     }); 
 

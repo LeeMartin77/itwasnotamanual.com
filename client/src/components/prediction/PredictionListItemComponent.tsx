@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Prediction } from "../../types/prediction";
+import { Prediction } from "../../../../types/prediction";
 import { ListItem, ListItemButton, ListItemText } from '@mui/material';
 
 interface PredictionSummaryProps {

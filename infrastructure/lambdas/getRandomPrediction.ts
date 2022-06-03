@@ -7,5 +7,5 @@ export async function main (
   _context: Context,
   _callback: Callback
 ): Promise<any> { 
-  return formatResponse(fakePredictions);
-}
+  const prediction = fakePredictions[Math.floor(Math.random() * fakePredictions.length)];
+  return formatResponse(prediction);}

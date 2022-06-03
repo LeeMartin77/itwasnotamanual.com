@@ -1,25 +1,17 @@
-import { Prediction } from "../types/prediction";
-import { fakePredictions } from "./fakePredictions";
+import { Prediction } from "../../../types/prediction";
+
+const API_ROOT_URL = process.env.REACT_APP_API_ROOT_URL || "https://api.itwasntamanual.com"
 
 export async function getPredictions(): Promise<Prediction[]> {
-  // TODO: This will be on a server
-  return fakePredictions;
+  return await(await fetch(API_ROOT_URL + '/predictions')).json()
 }
 
 export async function getRandomPrediction(): Promise<Prediction> {
-  // TODO: This will be on a server
-  const prediction = fakePredictions[Math.floor(Math.random() * fakePredictions.length)];
-  console.log(prediction)
-  return prediction;
+  return await(await fetch(API_ROOT_URL + '/prediction/random')).json()
 }
 
 export async function getPredictionFromUrl(
   predictionUrl: string
 ): Promise<Prediction> {
-  // TODO: This will be on a server
-  const prediction = fakePredictions.find((x) => x.url === predictionUrl);
-  if (prediction) {
-    return prediction;
-  }
-  throw Error("Prediction not found");
+  return await(await fetch(API_ROOT_URL + '/prediction/' + predictionUrl)).json()
 }

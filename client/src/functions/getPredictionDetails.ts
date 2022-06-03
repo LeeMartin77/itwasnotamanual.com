@@ -1,4 +1,4 @@
-import { Prediction, PredictionDetail } from "../types/prediction";
+import { Prediction, PredictionDetail } from "../../../types/prediction";
 import {
   formatOpenLibraryCoverUrlFromCoverNumber,
   getOpenLibraryAuthorByKey,

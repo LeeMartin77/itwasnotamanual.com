@@ -9,7 +9,7 @@ import {
   useNavigate
 } from "react-router-dom";
 import { PredictionDetailsComponent } from "./components/prediction/PredictionDetailsComponent";
-import { Prediction } from "./types/prediction";
+import { Prediction } from "../../types/prediction";
 import { PredictionListComponent } from "./components/prediction/PredictionListComponent";
 import { getPredictionFromUrl, getPredictions, getRandomPrediction } from "./functions/getPredictions";
 import { ThemeProvider } from "@emotion/react";

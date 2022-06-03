@@ -1,4 +1,4 @@
-import { Prediction } from "../../types/prediction";
+import { Prediction } from "../../../../types/prediction";
 import { PredictionListItemComponent } from "./PredictionListItemComponent";
 import { List } from '@mui/material';
 
