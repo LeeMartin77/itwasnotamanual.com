@@ -12,8 +12,9 @@ import { Prediction } from "../../types/prediction";
 import { PredictionListComponent } from "./components/prediction/PredictionListComponent";
 import { getPredictionFromUrl, getPredictions, getRandomPrediction } from "./functions/getPredictions";
 import { ThemeProvider } from "@emotion/react";
-import { Container, createTheme, CssBaseline, CircularProgress, Alert } from "@mui/material";
+import { Container, createTheme, CssBaseline, CircularProgress, Alert, Box } from "@mui/material";
 import { BottomNavigationComponent } from "./components/navigation/BottomNavigationComponent";
+import { SideNavigationComponent } from "./components/navigation/SideNavigationComponent";
 
 function PredictionListRouteChildComponent() {
   const [predictions, setPredictions] = useState<Prediction[]>([]);
@@ -101,11 +102,28 @@ const theme = createTheme({
 });
 
 function App() {
+  const [isDesktop, setDesktop] = useState(window.innerWidth > theme.breakpoints.values.sm);
+
+  const updateMedia = () => {
+    setDesktop(window.innerWidth > theme.breakpoints.values.sm);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", updateMedia);
+    return () => window.removeEventListener("resize", updateMedia);
+  });
+
+  const containerClassName = isDesktop ? "main-container-nonmobile" : "main-container-mobile";
+
   return (
     <ThemeProvider theme={theme}>
         <CssBaseline />
         <BrowserRouter>
-          <Container component="main" maxWidth={"xs"} className="main-container">
+
+          <Box sx={{ display: 'flex' }}>
+          {isDesktop && <SideNavigationComponent />}
+          <Box component="main">
+            <Container maxWidth={'sm'} className={containerClassName} >
             <Routes>
               <Route
                 path="/prediction/:predictionUrl"
@@ -122,8 +140,10 @@ function App() {
                 }
               />
             </Routes>
-          </Container>
-          <BottomNavigationComponent />
+            </Container>
+          </Box>
+          {!isDesktop && <BottomNavigationComponent />}
+          </Box>
         </BrowserRouter>
     </ThemeProvider>
   );
