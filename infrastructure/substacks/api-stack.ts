@@ -174,7 +174,19 @@ export class APIStack extends Stack {
         origin: new origins.HttpOrigin(backingApiDomain),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         cachePolicy,
-        responseHeadersPolicy
+        responseHeadersPolicy,
+        allowedMethods: {
+          // CloudFront gets unhappy if it's not either everything or just get/head/options
+          methods:[
+            HttpMethod.HEAD, 
+            HttpMethod.DELETE, 
+            HttpMethod.POST, 
+            HttpMethod.GET, 
+            HttpMethod.OPTIONS, 
+            HttpMethod.PUT, 
+            HttpMethod.PATCH
+          ]
+        }
       },
       certificate: certificate,
       domainNames: [domainName]
