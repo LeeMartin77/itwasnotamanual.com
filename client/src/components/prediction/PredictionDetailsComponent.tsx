@@ -75,7 +75,7 @@ export function PredictionDetailsComponent({
             </Box>}
 
 
-          { predictionDetail.quote && <Typography variant="body2">{predictionDetail.quote}</Typography>}
+          { predictionDetail.quote && <Typography style={{paddingTop: 16}} variant="body1">{predictionDetail.quote}</Typography>}
           </>
       }
       </CardContent>
