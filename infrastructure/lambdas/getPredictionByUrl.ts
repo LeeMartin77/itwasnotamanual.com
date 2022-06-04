@@ -18,11 +18,9 @@ export async function main (
 
   var params: AWS.DynamoDB.QueryInput = {
     ExpressionAttributeValues: {
-      ':purl' : {S: predictionUrl},
-      ':moded' : { BOOL: true }
+      ':purl' : {S: predictionUrl}
     },
     KeyConditionExpression: 'pageUrl = :purl',
-    FilterExpression: 'moderated = :moded',
     TableName: process.env.PREDICTIONS_TABLE_NAME!
   };
   try {
