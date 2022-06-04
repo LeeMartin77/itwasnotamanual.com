@@ -16,11 +16,13 @@ export async function main (
   }
   const { predictionUrl } = event.pathParameters;
 
-  var params = {
+  var params: AWS.DynamoDB.QueryInput = {
     ExpressionAttributeValues: {
-      ':purl' : {S: predictionUrl}
+      ':purl' : {S: predictionUrl},
+      ':moded' : { BOOL: true }
     },
     KeyConditionExpression: 'pageUrl = :purl',
+    FilterExpression: 'moderated = :moded',
     TableName: process.env.PREDICTIONS_TABLE_NAME!
   };
   try {

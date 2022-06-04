@@ -12,8 +12,12 @@ export async function main (
   _callback: Callback
 ): Promise<any> { 
   //TODO: Eventually this won't be a thing, but for now it's fine
-  var params = {
-    TableName: process.env.PREDICTIONS_TABLE_NAME!
+  var params: AWS.DynamoDB.Types.ScanInput = {
+    ExpressionAttributeValues: {
+      ':moded' : { BOOL: true }
+    },
+    TableName: process.env.PREDICTIONS_TABLE_NAME!,
+    FilterExpression: 'moderated = :moded'
   };
   try {
     const result = await dynamo.scan(params).promise();

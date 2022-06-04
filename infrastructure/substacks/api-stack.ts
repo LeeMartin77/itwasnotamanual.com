@@ -110,6 +110,12 @@ export class APIStack extends Stack {
         endpointPath: '/prediction/random',
         methods: [HttpMethod.GET]
       },
+      {
+        handler: 'main',
+        lambdaFile: 'createPrediction.ts',
+        endpointPath: '/prediction',
+        methods: [HttpMethod.POST]
+      },
     ]
 
     lambdas.forEach(({handler, lambdaFile, endpointPath, methods}) => {
@@ -117,10 +123,11 @@ export class APIStack extends Stack {
         runtime: lambda.Runtime.NODEJS_16_X,
         handler,
         entry: path.join(__dirname, '..', 'lambdas', lambdaFile),
-        timeout: cdk.Duration.seconds(5),
+        timeout: cdk.Duration.seconds(10),
         memorySize: 256,
         bundling: {
           externalModules: ['aws-sdk'],
+          
         },
         environment: {
           PREDICTIONS_TABLE_NAME: predictionsTable.tableName

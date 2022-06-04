@@ -13,8 +13,12 @@ export async function main (
 ): Promise<any> { 
   // TODO: Pagination
   //const lastEvaluated  = event.queryStringParameters && event.queryStringParameters.LastEvaluatedKey
-  var params = {
+  var params: AWS.DynamoDB.Types.ScanInput = {
+    ExpressionAttributeValues: {
+      ':moded' : { BOOL: true }
+    },
     TableName: process.env.PREDICTIONS_TABLE_NAME!,
+    FilterExpression: 'moderated = :moded',
     Limit: 20,
     //ExclusiveStartKey: lastEvaluated
   };
