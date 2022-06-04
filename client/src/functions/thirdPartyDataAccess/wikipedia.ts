@@ -40,9 +40,17 @@ export interface WikipediaMediaResponse {
 }
 
 export async function getWikipediaSummary(wikiPageSlug: string): Promise<WikipediaSummaryResponse> {
-  return await(await fetch(wikipediaSummaryUrl + wikiPageSlug)).json()
+  const response = await fetch(wikipediaSummaryUrl + wikiPageSlug);
+  if (!response.ok) {
+    throw Error("Something went wrong")
+  }
+  return await response.json();
 }
 
 export async function getWikipediaMedia(wikiPageSlug: string): Promise<WikipediaMediaResponse> {
-  return await(await fetch(wikipediaMediaUrl + wikiPageSlug)).json()
+  const response = await fetch(wikipediaMediaUrl + wikiPageSlug);
+  if (!response.ok) {
+    throw Error("Something went wrong")
+  }
+  return await response.json();
 }

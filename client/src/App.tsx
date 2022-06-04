@@ -15,6 +15,7 @@ import { ThemeProvider } from "@emotion/react";
 import { Container, createTheme, CssBaseline, CircularProgress, Alert, Box } from "@mui/material";
 import { BottomNavigationComponent } from "./components/navigation/BottomNavigationComponent";
 import { SideNavigationComponent } from "./components/navigation/SideNavigationComponent";
+import { PredictionSubmissionComponent } from "./components/prediction/PredictionSubmissionComponent";
 
 function PredictionListRouteChildComponent() {
   const [predictions, setPredictions] = useState<Prediction[]>([]);
@@ -126,6 +127,7 @@ function App() {
           <Box component="main">
             <Container maxWidth={'sm'} className={containerClassName} >
             <Routes>
+              <Route path="/submit" element={<PredictionSubmissionComponent />}/>
               <Route
                 path="/prediction/:predictionUrl"
                 element={<PredictionRouteChildComponent />}

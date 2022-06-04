@@ -26,6 +26,13 @@ export async function main (
     return formatResponse({ message: "Could not parse Body"}, 400)
   }
   const { openlibraryid, wiki, quote } = parsed;
+  if (!openlibraryid || !wiki) {
+    return formatResponse({ message: `Missing required field "openlibraryid" or "wiki"`}, 400)
+  }
+  const maxQuoteLength = 280;
+  if (quote && quote.length > maxQuoteLength) {
+    return formatResponse({ message: `Quote must be less than ${maxQuoteLength} characters`}, 400)
+  }
 
   var queryParams: AWS.DynamoDB.QueryInput = {
     IndexName: "openlibraryid-wiki",
@@ -64,7 +71,7 @@ export async function main (
   let pageUrl = bookDetails.title + " " + wikiDetails.title;
   pageUrl = pageUrl.toLowerCase();
   pageUrl = pageUrl.replace(/[^a-z0-9 ]/gi, '')
-  pageUrl = pageUrl.replace(" ", "-")
+  pageUrl = pageUrl.replace(/[ ]/gi, "-")
 
   pageUrl = pageUrl + "-" + randombit;
 
@@ -94,6 +101,6 @@ export async function main (
     return formatResponse(mapDynamoToObject(dynamoItem));
   }
   catch (ex: any) {
-    return formatResponse(ex, 500)
+    return formatResponse({ ...ex, putItem: dynamoItem}, 500)
   }
 }

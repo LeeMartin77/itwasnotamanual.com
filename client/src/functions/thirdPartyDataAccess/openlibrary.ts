@@ -11,6 +11,7 @@ const coverUrl = "https://covers.openlibrary.org/b/id/"
 type CoverSizes = 'S' | 'M' | 'L'
 
 export interface OpenLibraryBooksResponse {
+  location?: string
   isbn_10: string[]
   isbn_13: string[]
   title: string
@@ -18,7 +19,10 @@ export interface OpenLibraryBooksResponse {
   // This key can be added to the base openlibrary with a .json to get details
   authors: {author: {key: string }, type: { key: string }}[]
   works: { key: string }[]
-  covers: number[]
+  covers: number[],
+  type: {
+    key: string
+  }
 }
 
 export interface OpenLibraryAuthorResponse {
@@ -34,11 +38,24 @@ export interface OpenLibraryAuthorResponse {
 
 
 export async function getOpenLibraryWorkById(openLibraryId: string): Promise<OpenLibraryBooksResponse> {
-  return await (await fetch(openlibrarybase + "/works/" + openLibraryId + ".json")).json()
+  const response = await fetch(openlibrarybase + "/works/" + openLibraryId + ".json");
+  if (!response.ok) {
+    throw Error("Something went wrong")
+  }
+  const body = await response.json() as OpenLibraryBooksResponse
+  if (body.type.key === "/type/redirect") {
+    const parts = body.location!.split("/")
+    return getOpenLibraryWorkById(parts[parts.length - 1])
+  }
+  return body;
 }
 
 export async function getOpenLibraryAuthorByKey(openLibraryAuthorKey: string): Promise<OpenLibraryAuthorResponse> {
-  return await (await fetch(openlibrarybase + openLibraryAuthorKey + ".json")).json()
+  const response = await fetch(openlibrarybase + openLibraryAuthorKey + ".json");
+  if (!response.ok) {
+    throw Error("Something went wrong")
+  }
+  return await response.json();
 }
 
 export function formatOpenLibraryCoverUrlFromCoverNumber(coverNumber: number, coverSize: CoverSizes = 'M'): string {

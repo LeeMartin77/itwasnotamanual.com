@@ -1,4 +1,4 @@
-import { FormatListBulleted, Shuffle } from "@mui/icons-material";
+import { FormatListBulleted, Shuffle, Send } from "@mui/icons-material";
 
 export const navigationConfig = [
   {
@@ -10,5 +10,10 @@ export const navigationConfig = [
     label: "List",
     route: "/predictions",
     icon: FormatListBulleted
+  },
+  {
+    label: "Submit",
+    route: "/submit",
+    icon: Send
   }
 ]

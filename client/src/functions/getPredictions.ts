@@ -8,15 +8,27 @@ interface PaginatedResult<T> {
 }
 
 export async function getPredictions(): Promise<PaginatedResult<Prediction>> {
-  return await(await fetch(API_ROOT_URL + '/predictions')).json()
+  const response = await fetch(API_ROOT_URL + '/predictions');
+  if (!response.ok) {
+    throw Error("Something went wrong")
+  }
+  return await response.json();
 }
 
 export async function getRandomPrediction(): Promise<Prediction> {
-  return await(await fetch(API_ROOT_URL + '/prediction/random')).json()
+  const response = await fetch(API_ROOT_URL + '/prediction/random');
+  if (!response.ok) {
+    throw Error("Something went wrong")
+  }
+  return await response.json();
 }
 
 export async function getPredictionFromUrl(
   predictionUrl: string
 ): Promise<Prediction> {
-  return await(await fetch(API_ROOT_URL + '/prediction/' + predictionUrl)).json()
+  const response = await fetch(API_ROOT_URL + '/prediction/' + predictionUrl);
+  if (!response.ok) {
+    throw Error("Something went wrong")
+  }
+  return await response.json();
 }
