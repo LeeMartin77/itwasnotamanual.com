@@ -77,7 +77,7 @@ export function PredictionDetailsComponent({
       </CardContent>
       <CardActions>
         {random ? 
-          <Button onClick={() => navigate("/prediction/" + prediction.url)}>Go to Page</Button> : 
+          <Button onClick={() => navigate("/prediction/" + prediction.pageUrl)}>Go to Page</Button> : 
           <Button onClick={() => navigate(-1)}>Go Back</Button>
         }
       </CardActions>

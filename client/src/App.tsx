@@ -24,7 +24,8 @@ function PredictionListRouteChildComponent() {
   useEffect(() => {
     getPredictions()
       .then((pred) => {
-        setPredictions(pred);
+        //TODO: Pagination
+        setPredictions(pred.Items);
         setLoading(false);
       })
       .catch(() => setError(true));

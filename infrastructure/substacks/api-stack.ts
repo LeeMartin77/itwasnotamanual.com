@@ -24,6 +24,27 @@ export class APIStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
+    const predictionsTable = new dynamodb.Table(this, 'itwasntamanualPredictions', {
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      removalPolicy: RemovalPolicy.DESTROY,
+      partitionKey: {
+        name: "pageUrl",
+        type: dynamodb.AttributeType.STRING
+      }
+    })
+
+    predictionsTable.addGlobalSecondaryIndex({
+      indexName: "openlibraryid-wiki",
+      partitionKey: {
+        name: "openlibraryid",
+        type: dynamodb.AttributeType.STRING
+      },
+      sortKey: {
+        name: "wiki",
+        type: dynamodb.AttributeType.STRING
+      }
+    })
+
     const zone = route53.HostedZone.fromLookup(this, 'itwasntamanualZone', {
       domainName: 'itwasntamanual.com'
     });
@@ -100,8 +121,13 @@ export class APIStack extends Stack {
         memorySize: 256,
         bundling: {
           externalModules: ['aws-sdk'],
+        },
+        environment: {
+          PREDICTIONS_TABLE_NAME: predictionsTable.tableName
         }
       })
+
+      predictionsTable.grantReadWriteData(lambdaFunction)
   
       httpApi.addRoutes({
         path: endpointPath,

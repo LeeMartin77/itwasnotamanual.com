@@ -11,7 +11,7 @@ export function PredictionListItemComponent({
 }: PredictionSummaryProps) {
   return (
     <ListItem>
-      <ListItemButton component={Link} to={`/prediction/${prediction.url}`}>
+      <ListItemButton component={Link} to={`/prediction/${prediction.pageUrl}`}>
         <ListItemText>{prediction.wiki_title} in {prediction.book_title}</ListItemText>
       </ListItemButton>
     </ListItem>

@@ -2,7 +2,12 @@ import { Prediction } from "../../../types/prediction";
 
 const API_ROOT_URL = process.env.REACT_APP_API_ROOT_URL || "https://api.itwasntamanual.com"
 
-export async function getPredictions(): Promise<Prediction[]> {
+interface PaginatedResult<T> {
+  Items: T[],
+  LastEvaluatedKey?: any
+}
+
+export async function getPredictions(): Promise<PaginatedResult<Prediction>> {
   return await(await fetch(API_ROOT_URL + '/predictions')).json()
 }
 
