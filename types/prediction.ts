@@ -13,7 +13,9 @@ export interface Prediction {
 
 export interface PredictionDetail extends Prediction {
   book: {
-    cover_url?: string
+    cover_url_sm?: string
+    cover_url_md?: string
+    cover_url_lg?: string
     title: string
     authors: { personal_name: string }[]
   }

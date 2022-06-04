@@ -6,6 +6,8 @@ import { getPredictionDetails } from "../../functions/getPredictionDetails";
 import { Prediction, PredictionDetail } from "../../../../types/prediction";
 import { Alert, Box, Button, Card, CardActions, CardContent, CircularProgress, Typography } from '@mui/material';
 
+import "./PredictionDetailsComponent.css"
+
 interface PredictionDetailsProps {
   prediction: Prediction;
   random?: boolean;
@@ -44,34 +46,36 @@ export function PredictionDetailsComponent({
     <Card>
       <CardContent>
           <h1>{prediction.wiki_title} in {prediction.book_title}</h1>
-      {loading && <CircularProgress />}
-      {!loading && error && <Alert severity="error">Error loading details</Alert>}
-      {!loading && !error && predictionDetail && <>
+          {loading && <CircularProgress />}
+          {!loading && error && <Alert severity="error">Error loading details</Alert>}
+          {!loading && !error && predictionDetail && <>
           <h4>
             Written by{" "}
             {predictionDetail.book.authors
               .map((x) => x.personal_name)
               .join(", ")}
           </h4>
-          { predictionDetail.quote && <Typography variant="body2">{predictionDetail.quote}</Typography>}
-          <Box
-            component="img"
-            sx={{
-              maxHeight: { xs: 233, md: 167 },
-              maxWidth: { xs: 350, md: 250 },
-            }}
-            src={predictionDetail.book.cover_url}
-            alt={predictionDetail.book.title + " Cover"}
-          />
-          <Box
-            component="img"
-            sx={{
-              maxHeight: { xs: 233, md: 167 },
-              maxWidth: { xs: 350, md: 250 },
-            }}
+          {predictionDetail.subject.image_url && <Box
+            className="stacked-prediction-image-box"
+          >
+            <img className="prediction-subject-img"
             src={predictionDetail.subject.image_url}
-            alt={predictionDetail.subject.title + " Image"}
-          />
+            alt={predictionDetail.subject.title + " Image"} />
+            {predictionDetail.book.cover_url_md && 
+            <img className="prediction-book-stacked-img"
+            src={predictionDetail.book.cover_url_md}
+            alt={predictionDetail.book.title + " Cover"} />}
+            </Box>}
+          {!predictionDetail.subject.image_url && predictionDetail.book.cover_url_lg && <Box
+            className="cover-only-prediction-image-box"
+            >
+              <img className="prediction-book-solo-img"
+              src={predictionDetail.book.cover_url_lg}
+              alt={predictionDetail.book.title + " Cover"}/>
+            </Box>}
+
+
+          { predictionDetail.quote && <Typography variant="body2">{predictionDetail.quote}</Typography>}
           </>
       }
       </CardContent>

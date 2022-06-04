@@ -1,0 +1,38 @@
+.stacked-prediction-image-box {
+  position: relative;
+  max-height: 240px;
+  min-height: 240px;
+  overflow: hidden;
+}
+
+.stacked-prediction-image-box > .prediction-subject-img {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 100%;
+  min-width: 100%;
+}
+
+.stacked-prediction-image-box > .prediction-book-stacked-img {
+  position: absolute;
+  max-height: 50%;
+  bottom: 0;
+  right: 0;
+}
+
+.cover-only-prediction-image-box {
+  position: relative;
+  max-height: 240px;
+  min-height: 240px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cover-only-prediction-image-box > .prediction-book-solo-img {
+  max-height: 240px;
+  min-height: 240px;
+  max-width: 100%;
+}

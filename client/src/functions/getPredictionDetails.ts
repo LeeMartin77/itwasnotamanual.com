@@ -20,7 +20,6 @@ export async function getPredictionDetails(
   let loadedDetails: PredictionDetail = {
     ...prediction,
     book: {
-      cover_url: "",
       title: "",
       authors: [],
     },
@@ -33,8 +32,14 @@ export async function getPredictionDetails(
   // do some stuff concurrently
   const data = await fnGetOpenLibraryWorkById(prediction.openlibraryid);
   if (data.covers.length > 0) {
-    loadedDetails.book.cover_url = fnFormatOpenLibraryCoverUrlFromCoverNumber(
-      data.covers[0]
+    loadedDetails.book.cover_url_lg = fnFormatOpenLibraryCoverUrlFromCoverNumber(
+      data.covers[0], "L"
+    );
+    loadedDetails.book.cover_url_md = fnFormatOpenLibraryCoverUrlFromCoverNumber(
+      data.covers[0], "M"
+    );
+    loadedDetails.book.cover_url_sm = fnFormatOpenLibraryCoverUrlFromCoverNumber(
+      data.covers[0], "S"
     );
   }
   loadedDetails.book.title = data.title;

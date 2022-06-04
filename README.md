@@ -21,15 +21,13 @@ The site itself will be a React app
 
 ### Planned sitemap:
 - `/`: Random prediction (reroll button to start, later make it the start of ranking)
-  - Ranking should be "Yes", "No", "Requote", "Report"
+  - Ranking should be "Yes", "No", "Page", "Report"
   - When the user has ranked all predictions, replace Rank buttons with "Random" and "List"
 - `/predictions`: Ranked list of predictions
 - `/prediction/:url`: A single book/subject prediction
 - `/submit-prediction`: Interface to add a new prediction
 - `/books`: List of books by number of predictions
 - `/book/:url`: A single book with a list of it's predictions
-- `/subjects`: List of subjects by number of books containing them
-- `/subject/:url`: Single subject with list of books containing subject
 
 ### Ideas to add
 
