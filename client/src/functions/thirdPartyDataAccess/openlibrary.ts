@@ -36,6 +36,28 @@ export interface OpenLibraryAuthorResponse {
   }
 }
 
+export async function checkOpenLibraryValue(potentialWorksId: string): Promise<[string, OpenLibraryBooksResponse]> {
+  if (potentialWorksId.startsWith(openlibrarybase)) {
+    potentialWorksId = potentialWorksId.replace(openlibrarybase, '')
+  }
+
+  if (potentialWorksId.startsWith("http")) {
+    throw new Error("Not an openlibrary works link")
+  }
+
+  if (potentialWorksId.startsWith("/")) {
+    // eslint-disable-next-line
+    const [_blank, type, urlid] = potentialWorksId.split("/")
+    if (type !== "works") {
+      throw new Error("Must be a works url or works ID")
+    }
+    potentialWorksId = urlid
+  }
+
+  const workResult = await getOpenLibraryWorkById(potentialWorksId)
+
+  return [potentialWorksId, workResult];
+}
 
 export async function getOpenLibraryWorkById(openLibraryId: string): Promise<OpenLibraryBooksResponse> {
   const response = await fetch(openlibrarybase + "/works/" + openLibraryId + ".json");

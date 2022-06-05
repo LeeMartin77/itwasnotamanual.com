@@ -1,4 +1,3 @@
-
 // https://en.wikipedia.org/api/rest_v1/#/Page%20content/get_page_summary__title_
 const wikipediaSummaryUrl = "https://en.wikipedia.org/api/rest_v1/page/summary/"
 // https://en.wikipedia.org/api/rest_v1/#/Page%20content/getContent-media-list
@@ -37,6 +36,32 @@ export interface WikipediaMediaResponse {
       scale: WikipediaImageScales
     }[]
   }[]
+}
+
+export async function checkWikipediaArticle(potentialWikipediaValue: string): Promise<[string, WikipediaSummaryResponse]> {
+  const wikipediaRoot = "https://en.wikipedia.org/wiki"
+  if (potentialWikipediaValue.startsWith(wikipediaRoot)) {
+    potentialWikipediaValue = potentialWikipediaValue.replace(wikipediaRoot, '')
+  }
+
+  if (potentialWikipediaValue.startsWith("http")) {
+    throw new Error("Not a wikipedia link")
+  }
+
+
+  if (potentialWikipediaValue.startsWith("/")) {
+    potentialWikipediaValue = potentialWikipediaValue.replace("/", "")
+    if (potentialWikipediaValue.includes("#")) {
+      [potentialWikipediaValue] = potentialWikipediaValue.split("#")
+    }
+    if (potentialWikipediaValue.includes("?")) {
+      [potentialWikipediaValue] = potentialWikipediaValue.split("?")
+    }
+  }
+
+  const wikiResult = await getWikipediaSummary(potentialWikipediaValue)
+
+  return [potentialWikipediaValue, wikiResult];
 }
 
 export async function getWikipediaSummary(wikiPageSlug: string): Promise<WikipediaSummaryResponse> {
