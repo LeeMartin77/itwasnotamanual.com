@@ -82,6 +82,7 @@ export async function main (
     id: { S: context.awsRequestId },
     global_partition: { S: "0" },
     sort_key: { S: generateSortKey(0, context.awsRequestId) },
+    total_votes: { N: "0" },
     pageUrl: { S: pageUrl },
     openlibraryid: { S: openlibraryid },
     book_title: { S: bookDetails.title },

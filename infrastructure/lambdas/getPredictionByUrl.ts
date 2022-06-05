@@ -1,10 +1,8 @@
 import { APIGatewayProxyEventV2, Callback, Context } from "aws-lambda";
 import { formatResponse } from "./shared/formatResponse";
+import { getDynamoPredictionFromPageUrl } from "./shared/getDynamoPredictionFromPageUrl";
 
-import * as AWS from "aws-sdk";
 import { mapDynamoToObject } from "./shared/mapDynamoToObject";
-
-const dynamo = new AWS.DynamoDB();
 
 export async function main (
   event: APIGatewayProxyEventV2,
@@ -16,17 +14,8 @@ export async function main (
   }
   const { predictionUrl } = event.pathParameters;
 
-  var params: AWS.DynamoDB.QueryInput = {
-    ExpressionAttributeValues: {
-      ':purl' : {S: predictionUrl}
-    },
-    KeyConditionExpression: 'pageUrl = :purl',
-    TableName: process.env.PREDICTIONS_TABLE_NAME!
-  };
   try {
-    const result = await dynamo.query(params).promise();
-
-    const prediction = result.Items && result.Items[0];
+    const prediction = await getDynamoPredictionFromPageUrl(predictionUrl);
     if (prediction) {
       return formatResponse(mapDynamoToObject(prediction));
     }

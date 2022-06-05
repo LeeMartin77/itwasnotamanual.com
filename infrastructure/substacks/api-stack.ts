@@ -69,6 +69,20 @@ export class APIStack extends Stack {
       }
     })
 
+
+    const userVotesTable = new dynamodb.Table(this, 'itwasntamanualUserPredictionVotes', {
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      removalPolicy: RemovalPolicy.DESTROY,
+      partitionKey: {
+        name: "userId",
+        type: dynamodb.AttributeType.STRING
+      },
+      sortKey: {
+        name: "status",
+        type: dynamodb.AttributeType.STRING
+      }
+    })
+
     const zone = route53.HostedZone.fromLookup(this, 'itwasntamanualZone', {
       domainName: 'itwasntamanual.com'
     });
@@ -130,14 +144,20 @@ export class APIStack extends Stack {
       },
       {
         handler: 'main',
-        lambdaFile: 'getRandomPrediction.ts',
-        endpointPath: '/prediction/random',
-        methods: [HttpMethod.GET]
+        lambdaFile: 'createPrediction.ts',
+        endpointPath: '/prediction',
+        methods: [HttpMethod.POST]
       },
       {
         handler: 'main',
-        lambdaFile: 'createPrediction.ts',
-        endpointPath: '/prediction',
+        lambdaFile: 'createPredictionVote.ts',
+        endpointPath: '/predictionvote',
+        methods: [HttpMethod.POST]
+      },
+      {
+        handler: 'main',
+        lambdaFile: 'submitPredictionVote.ts',
+        endpointPath: '/predictionvote/submit',
         methods: [HttpMethod.POST]
       },
     ]
@@ -154,11 +174,13 @@ export class APIStack extends Stack {
           
         },
         environment: {
-          PREDICTIONS_TABLE_NAME: predictionsTable.tableName
+          PREDICTIONS_TABLE_NAME: predictionsTable.tableName,
+          PREDICTION_USER_VOTES_TABLE_NAME: userVotesTable.tableName
         }
       })
 
       predictionsTable.grantReadWriteData(lambdaFunction)
+      userVotesTable.grantReadWriteData(lambdaFunction)
   
       httpApi.addRoutes({
         path: endpointPath,

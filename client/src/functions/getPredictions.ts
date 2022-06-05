@@ -21,14 +21,6 @@ export async function getPredictions(): Promise<PaginatedResult<Prediction>> {
   return await response.json();
 }
 
-async function getRandomPrediction(): Promise<Prediction> {
-  const response = await fetch(API_ROOT_URL + '/prediction/random');
-  if (!response.ok) {
-    throw Error("Something went wrong")
-  }
-  return await response.json();
-}
-
 export async function getPredictionFromUrl(
   predictionUrl: string
 ): Promise<Prediction> {
@@ -41,16 +33,29 @@ export async function getPredictionFromUrl(
 
 // This being an OR is a bit weird, but we'll go with it
 export async function getPredictionVoteOrRandom(userIdentifier: string): Promise<VoteResult> {
-  // TODO this needs to call the actual endpoint with a post request
-  const prediction = await getRandomPrediction()
-  return {
-    prediction,
-    voteToken: "7e476c03-8aa6-4676-eq34-e24ca27710a8",
-    hasVote: true
+  const response = await fetch(API_ROOT_URL + '/predictionvote', {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ userIdentifier })
+  });
+  if (!response.ok) {
+    throw Error("Something went wrong")
   }
+  return await response.json();
 }
 
 export async function submitVote({userIdentifier, voteToken, pageUrl, positive}: { userIdentifier: string, voteToken: string, pageUrl: string, positive: boolean } ): Promise<void> {
   // TODO this needs to call the actual endpoint with a post request
-  console.log("Submitted: ", {userIdentifier, voteToken, pageUrl, positive})
+  const response = await fetch(API_ROOT_URL + '/predictionvote/submit', {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({userIdentifier, voteToken, pageUrl, positive})
+  });
+  if (!response.ok) {
+    throw Error("Something went wrong")
+  }
 }

@@ -1,7 +1,16 @@
+const splitchar = "#"
+
+const minusPrefix = "m"
+const positivePrefix = "p"
+
 export function generateSortKey(votes: number, uniqueId: string) {
-  // Things might have more negative votes, but it should just go to 0
-  if(votes < 0) {
-    votes = 0;
-  }
-  return `${String(votes).padStart(8, '0')}-${uniqueId}`
+  const prefix = votes < 0 ? "m" : "p"
+  votes = Math.abs(votes);
+  return `${prefix}${splitchar}${String(votes).padStart(8, '0')}${splitchar}${uniqueId}`
+}
+
+export function unpackSortKey(sortKey: string): { ranking: number, identifier: string } {
+  const [prefix, number, identifier] = sortKey.split(splitchar)
+  const numberValue = prefix == positivePrefix ? parseInt(number) : 0 - parseInt(number)
+  return { ranking: numberValue, identifier }
 }
