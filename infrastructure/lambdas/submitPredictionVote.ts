@@ -31,11 +31,9 @@ export async function main (
     try {
       var params: AWS.DynamoDB.Types.QueryInput = {
         ExpressionAttributeValues: {
-          ':userIdent' : { S: userIdentifier },
-          ':vtok' : { S: voteToken }
+          ':userIdent' : { S: userIdentifier }
         },
         KeyConditionExpression: "userId = :userIdent",
-        FilterExpression: "voteToken = :vtok",
         TableName: process.env.PREDICTION_USER_VOTES_TABLE_NAME!,
         Limit: 100
       };
@@ -43,7 +41,7 @@ export async function main (
       if (result.Count && result.Count > 0 && result.Items) {
         const activeVote = result.Items.find(x => x.status.S == "active")
         let completedVotes = result.Items.find(x => x.status.S == "complete");
-        if (!activeVote || !activeVote.pageUrls.SS!.includes(pageUrl)) {
+        if (!activeVote || !activeVote.pageUrls.SS!.includes(pageUrl) || activeVote.voteToken.S != voteToken) {
           return formatResponse({ message: "Could not find valid vote token for user and page"}, 404)
         }
         await dynamo.deleteItem({
