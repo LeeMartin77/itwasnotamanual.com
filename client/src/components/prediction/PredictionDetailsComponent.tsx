@@ -4,7 +4,7 @@ useNavigate,
 } from "react-router-dom";
 import { getPredictionDetails } from "../../functions/getPredictionDetails";
 import { Prediction, PredictionDetail } from "../../../../types/prediction";
-import { Alert, Box, Button, Card, CardActions, CardContent, CircularProgress, Typography } from '@mui/material';
+import { Alert, Box, Button, Card, CardActions, CardContent, CardHeader, CircularProgress, Typography } from '@mui/material';
 
 import "./PredictionDetailsComponent.css"
 
@@ -44,17 +44,14 @@ export function PredictionDetailsComponent({
   ]);
   return (
     <Card>
-      <CardContent>
-          <h1>{prediction.wiki_title} in {prediction.book_title}</h1>
-          {loading && <CircularProgress />}
-          {!loading && error && <Alert severity="error">Error loading details</Alert>}
-          {!loading && !error && predictionDetail && <>
-          <h4>
-            Written by{" "}
-            {predictionDetail.book.authors
+      <CardHeader title={prediction.wiki_title + " in " + prediction.book_title} subheader={!loading && !error && predictionDetail && "Written by " + predictionDetail.book.authors
               .map((x) => x.personal_name)
-              .join(", ")}
-          </h4>
+              .join(", ")}/>
+      <CardContent>
+          {!prediction.moderated && <Alert style={{marginBottom: 16}} severity="warning">Prediction is awaiting moderation</Alert>}
+          {loading && <CircularProgress />}
+          {!loading && error && <Alert style={{marginBottom: 16}} severity="error">Error loading details</Alert>}
+          {!loading && !error && predictionDetail && <>
           {predictionDetail.subject.image_url && <Box
             className="stacked-prediction-image-box"
           >

@@ -36,3 +36,7 @@
   min-height: 240px;
   max-width: 100%;
 }
+
+.author-header {
+  margin-top: 0;
+}
