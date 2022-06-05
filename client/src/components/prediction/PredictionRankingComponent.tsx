@@ -20,12 +20,12 @@ function VoteControls(
 
     const choices ={
       positive: {
-        label: "Yes",
+        label: "Agree",
         onClick: () => voteCallback(userId, voteToken!, true),
         icon: CheckCircleIcon
       },
       negative: {
-        label: "No",
+        label: "Disagree",
         onClick: () => voteCallback(userId, voteToken!, false),
         icon: CancelIcon
       },
