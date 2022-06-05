@@ -1,6 +1,6 @@
 import { Prediction } from "../../../types/prediction";
 
-const API_ROOT_URL = process.env.REACT_APP_API_ROOT_URL || "https://api.itwasntamanual.com"
+const API_ROOT_URL = process.env.REACT_APP_API_ROOT_URL || "https://api.itwasnotamanual.com"
 
 interface PaginatedResult<T> {
   Items: T[],

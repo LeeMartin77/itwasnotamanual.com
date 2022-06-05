@@ -16,9 +16,9 @@ export class FrontendInfrastructureStack extends Stack {
     super(scope, id, props);
 
 
-    const domainName = `www.itwasntamanual.com`
+    const domainName = `www.itwasnotamanual.com`
 
-    const frontendS3Bucket = new s3.Bucket(this, 'itwasntamanual.com', {
+    const frontendS3Bucket = new s3.Bucket(this, 'itwasnotamanual.com', {
       removalPolicy: RemovalPolicy.DESTROY,
     })
 
@@ -31,7 +31,7 @@ export class FrontendInfrastructureStack extends Stack {
     frontendS3Bucket.grantRead(frontendS3BucketOriginAccess);
 
     const zone = route53.HostedZone.fromLookup(this, 'itwasntamanualZone', {
-      domainName: 'itwasntamanual.com'
+      domainName: 'itwasnotamanual.com'
     });
 
     const certificate = new acm.Certificate(this, 'itwasntamanualcomCertificate', {
@@ -79,8 +79,8 @@ export class FrontendInfrastructureStack extends Stack {
 
     new route53Pats.HttpsRedirect(this, 'www redirect',  {
       zone: zone,
-      recordNames: ['itwasntamanual.com'],
-      targetDomain: 'www.itwasntamanual.com'
+      recordNames: ['itwasnotamanual.com'],
+      targetDomain: 'www.itwasnotamanual.com'
     })
     
     new cdk.CfnOutput(this, 'frontendCloudfrontDistributionId', { value: cfDist.distributionId, exportName: "itwasntamanualDistributionId" });

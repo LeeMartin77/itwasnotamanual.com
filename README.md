@@ -1,4 +1,4 @@
-# itwasntamanual.com
+# itwasnotamanual.com
 
 The idea here is simple, a catalogue of dystopian sci-fi ideas that modern life seems to have used as a blueprint
 

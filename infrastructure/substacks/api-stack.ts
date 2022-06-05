@@ -84,10 +84,10 @@ export class APIStack extends Stack {
     })
 
     const zone = route53.HostedZone.fromLookup(this, 'itwasntamanualZone', {
-      domainName: 'itwasntamanual.com'
+      domainName: 'itwasnotamanual.com'
     });
 
-    const backingApiDomain = 'backing-api.itwasntamanual.com'
+    const backingApiDomain = 'backing-api.itwasnotamanual.com'
 
     const backingCertificate = new acm.Certificate(this, 'backingapiitwasntamanualcomCertificate', {
       domainName: backingApiDomain,
@@ -192,7 +192,7 @@ export class APIStack extends Stack {
       })  
     })
 
-    const domainName = `api.itwasntamanual.com`
+    const domainName = `api.itwasnotamanual.com`
 
     const certificate = new acm.Certificate(this, 'apiitwasntamanualcomCertificate', {
       domainName,
