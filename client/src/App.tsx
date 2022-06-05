@@ -10,12 +10,13 @@ import {
 import { PredictionDetailsComponent } from "./components/prediction/PredictionDetailsComponent";
 import { Prediction } from "../../types/prediction";
 import { PredictionListComponent } from "./components/prediction/PredictionListComponent";
-import { getPredictionFromUrl, getPredictions, getRandomPrediction } from "./functions/getPredictions";
+import { getPredictionFromUrl, getPredictions } from "./functions/getPredictions";
 import { ThemeProvider } from "@emotion/react";
 import { Container, createTheme, CssBaseline, CircularProgress, Alert, Box } from "@mui/material";
 import { BottomNavigationComponent } from "./components/navigation/BottomNavigationComponent";
 import { SideNavigationComponent } from "./components/navigation/SideNavigationComponent";
 import { PredictionSubmissionComponent } from "./components/prediction/PredictionSubmissionComponent";
+import { PredictionRankingComponent } from "./components/prediction/PredictionRankingComponent";
 
 function PredictionListRouteChildComponent() {
   const [predictions, setPredictions] = useState<Prediction[]>([]);
@@ -72,31 +73,6 @@ function PredictionRouteChildComponent() {
   );
 }
 
-function PredictionRandomRouteChildComponent() {
-  const [prediction, setPrediction] = useState<Prediction | undefined>(
-    undefined
-  );
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
-
-  useEffect(() => {
-    getRandomPrediction()
-      .then((pred) => {
-        setPrediction(pred);
-        setLoading(false);
-      })
-      .catch(() => setError(true));
-  }, [setPrediction, setLoading, setError]);
-
-  return !loading && !error && prediction ? (
-    <PredictionDetailsComponent prediction={prediction} random={true} />
-  ) : error ? (
-    <Alert severity="error">Error loading prediction</Alert>
-  ) : (
-    <CircularProgress />
-  );
-}
-
 const theme = createTheme({
   palette: {
     mode: 'dark',
@@ -133,7 +109,7 @@ function App() {
                 element={<PredictionRouteChildComponent />}
               />
               <Route path="/predictions" element={<PredictionListRouteChildComponent />} />
-              <Route path="/" element={<PredictionRandomRouteChildComponent />} />
+              <Route path="/" element={<PredictionRankingComponent />} />
               <Route
                 path="*"
                 element={

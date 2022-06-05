@@ -2,7 +2,7 @@ import { FormatListBulleted, Shuffle, Send } from "@mui/icons-material";
 
 export const navigationConfig = [
   {
-    label: "Random",
+    label: "Rank",
     route: "/",
     icon: Shuffle
   },

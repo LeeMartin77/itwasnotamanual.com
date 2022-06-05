@@ -13,17 +13,21 @@ export async function main (
 ): Promise<any> { 
   // TODO: Pagination
   //const lastEvaluated  = event.queryStringParameters && event.queryStringParameters.LastEvaluatedKey
-  var params: AWS.DynamoDB.Types.ScanInput = {
+  var params: AWS.DynamoDB.Types.QueryInput = {
     ExpressionAttributeValues: {
-      ':moded' : { BOOL: true }
+      ':moded' : { BOOL: true },
+      ':globalpart': { S: "0" }
     },
+    IndexName: "global_partition-sort_key",
+    KeyConditionExpression: "global_partition = :globalpart",
+    ScanIndexForward: false, 
     TableName: process.env.PREDICTIONS_TABLE_NAME!,
     FilterExpression: 'moderated = :moded',
-    Limit: 20,
+    Limit: 50,
     //ExclusiveStartKey: lastEvaluated
   };
   try {
-    const result = await dynamo.scan(params).promise();
+    const result = await dynamo.query(params).promise();
 
     const predictions = result.Items;
     if (predictions) {
@@ -31,6 +35,6 @@ export async function main (
     }
   }
   catch (ex: any) {
-    return formatResponse({}, 500)
+    return formatResponse(ex, 500)
   }
 }

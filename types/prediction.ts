@@ -1,5 +1,6 @@
 export interface Prediction {
   id: string
+  sort_key: string
   pageUrl: string
   openlibraryid: string
   // TODO: We should populate this from openlibrary in the lambda

@@ -10,7 +10,7 @@ import "./PredictionDetailsComponent.css"
 
 interface PredictionDetailsProps {
   prediction: Prediction;
-  random?: boolean;
+  hasLink?: boolean;
   fnGetPredictionDetails?: (
     prediction: Prediction
   ) => Promise<PredictionDetail>;
@@ -18,7 +18,7 @@ interface PredictionDetailsProps {
 
 export function PredictionDetailsComponent({
   prediction,
-  random = false,
+  hasLink = false,
   fnGetPredictionDetails = getPredictionDetails,
 }: PredictionDetailsProps) {
   const navigate = useNavigate();
@@ -77,7 +77,7 @@ export function PredictionDetailsComponent({
       }
       </CardContent>
       <CardActions>
-        {random ? 
+        {hasLink ? 
           <Button onClick={() => navigate("/prediction/" + prediction.pageUrl)}>Go to Page</Button> : 
           <Button onClick={() => navigate(-1)}>Go Back</Button>
         }

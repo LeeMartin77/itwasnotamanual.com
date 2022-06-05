@@ -45,6 +45,30 @@ export class APIStack extends Stack {
       }
     })
 
+    predictionsTable.addGlobalSecondaryIndex({
+      indexName: "global_partition-sort_key",
+      partitionKey: {
+        name: "global_partition",
+        type: dynamodb.AttributeType.STRING
+      },
+      sortKey: {
+        name: "sort_key",
+        type: dynamodb.AttributeType.STRING
+      }
+    })
+
+    predictionsTable.addGlobalSecondaryIndex({
+      indexName: "openlibraryid-sort_key",
+      partitionKey: {
+        name: "openlibraryid",
+        type: dynamodb.AttributeType.STRING
+      },
+      sortKey: {
+        name: "sort_key",
+        type: dynamodb.AttributeType.STRING
+      }
+    })
+
     const zone = route53.HostedZone.fromLookup(this, 'itwasntamanualZone', {
       domainName: 'itwasntamanual.com'
     });

@@ -6,6 +6,7 @@ import { getWikipediaSummary, WikipediaSummaryResponse } from "./shared/thirdPar
 
 import * as AWS from "aws-sdk";
 import { mapDynamoToObject } from "./shared/mapDynamoToObject";
+import { generateSortKey } from "./shared/generateSortKey";
 
 const dynamo = new AWS.DynamoDB();
 
@@ -79,6 +80,8 @@ export async function main (
 
   const dynamoItem: any = {
     id: { S: context.awsRequestId },
+    global_partition: { S: "0" },
+    sort_key: { S: generateSortKey(0, context.awsRequestId) },
     pageUrl: { S: pageUrl },
     openlibraryid: { S: openlibraryid },
     book_title: { S: bookDetails.title },
