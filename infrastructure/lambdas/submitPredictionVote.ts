@@ -56,6 +56,9 @@ export async function main (
         if (!completedVotes) {
           completedVotes = activeVote!
           completedVotes.status.S = "complete"
+          delete(completedVotes.voteToken)
+        } else {
+          completedVotes.pageUrls.SS!.push(pageUrl)
         }
         await dynamo.putItem({
           Item: completedVotes,
