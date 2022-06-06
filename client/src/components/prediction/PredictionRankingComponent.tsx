@@ -1,4 +1,4 @@
-import { Alert, BottomNavigation, BottomNavigationAction, CircularProgress } from "@mui/material";
+import { Alert, Button, Card, CardActions, CircularProgress } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { Prediction } from "../../../../types/prediction";
 import { getPredictionVoteOrRandom, submitVote } from "../../functions/getPredictions";
@@ -20,7 +20,7 @@ function VoteControls(
 
     const choices ={
       positive: {
-        label: "Agree",
+        label: "Approve",
         onClick: () => voteCallback(userId, voteToken!, true),
         icon: CheckCircleIcon
       },
@@ -36,15 +36,19 @@ function VoteControls(
       }
     }
     if (!loading && canVote && voteToken) {
-      return <BottomNavigation showLabels>
-        <BottomNavigationAction label={choices.negative.label} onClick={choices.negative.onClick} icon={<choices.negative.icon />} />
-        <BottomNavigationAction label={choices.positive.label} onClick={choices.positive.onClick} icon={<choices.positive.icon />} />
-      </BottomNavigation>
+      return <Card style={{marginTop: "1rem"}}>
+        <CardActions style={{display:"flex"}}>
+          <Button onClick={choices.negative.onClick} endIcon={<choices.negative.icon />} variant="outlined" color="error">{choices.negative.label}</Button>
+          <Button onClick={choices.positive.onClick} startIcon={<choices.positive.icon />} style={{marginLeft: "auto", marginRight: "0"}} variant="outlined" color="success">{choices.positive.label}</Button>
+        </CardActions>
+      </Card>
     }
-    if (!loading && !canVote) {
-      return <BottomNavigation showLabels>
-        <BottomNavigationAction label={choices.refresh.label} onClick={choices.refresh.onClick} icon={<choices.refresh.icon />} />
-      </BottomNavigation>
+    if (!loading && (!canVote || !voteToken)) {
+      return <Card>
+        <CardActions style={{display: "flex"}}>
+        <Button onClick={choices.refresh.onClick} startIcon={<choices.refresh.icon />} style={{marginLeft: "auto", marginRight: "auto", width: "100%"}} variant="outlined">{choices.refresh.label}</Button>
+        </CardActions>
+      </Card>
     }
     return <></>
 }
