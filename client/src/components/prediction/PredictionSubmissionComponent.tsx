@@ -1,5 +1,5 @@
 
-import { Alert, Button, Card, CardActions, CardContent, CardHeader, CircularProgress, TextField } from '@mui/material';
+import { Alert, AlertColor, Button, Card, CardActions, CardContent, CardHeader, CircularProgress, Link, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPrediction } from '../../functions/createPrediction';
@@ -17,28 +17,30 @@ export function PredictionSubmissionComponent() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const [quoteInfo, setQuoteInfo] = useState<{message: string, error: boolean} | undefined>(undefined);
+  const quoteLength = 150;
+  const [quoteInfo, setQuoteInfo] = useState<{message: string, type: AlertColor}>({ message: `Optional: Must be under ${quoteLength} characters`, type: "info" });
   const [checking, setChecking] = useState([false, false]);
 
   const [openlibtimeout, setOpenLibTimeout] = useState<NodeJS.Timeout | undefined>(undefined);
-  const [openlibInfo, setOpenLibInfo] = useState<{message: string, error: boolean} | undefined>(undefined);
+  const [openlibInfo, setOpenLibInfo] = useState<{message: string | JSX.Element, type: AlertColor}>({ message: <Link href="https://openlibrary.org/search">Open Library Link</Link>, type: "info" });
 
   const [wikitimeout, setWikiTimeout] = useState<NodeJS.Timeout | undefined>(undefined);
-  const [wikiInfo, setWikiInfo] = useState<{message: string, error: boolean} | undefined>(undefined);
+  const [wikiInfo, setWikiInfo] = useState<{message: string | JSX.Element, type: AlertColor}>({ message: <Link href="https://en.wikipedia.org/wiki/Special:Search">Wikipedia Link</Link>, type: "info" });
 
   const handleOpenLibId = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (openlibtimeout) { clearTimeout(openlibtimeout) }
     const wiki= checking[1];
     setChecking([true, wiki])
     setOpenlibraryid(event.target.value)
+    setOpenLibInfo({ message: "Checking...", type: "info"});
     setOpenLibTimeout(setTimeout(() => {
       checkOpenLibraryValue(event.target.value)
         .then(([value, bookData]) => {
           setOpenlibraryid(value)
-          setOpenLibInfo({ message: bookData.title, error: false })
+          setOpenLibInfo({ message: bookData.title, type: "success" })
         })
         .catch((err: any) => {
-          setOpenLibInfo({ message: err.message, error: true })
+          setOpenLibInfo({ message: err.message, type: "error" })
         }).finally(() => {
           const wiki = checking[1];
           setChecking([false, wiki])
@@ -51,26 +53,29 @@ export function PredictionSubmissionComponent() {
     setWikislug(event.target.value)
     const open = checking[0];
     setChecking([open, true])
+    setWikiInfo({ message: "Checking...", type: "info"});
     setWikiTimeout(setTimeout(() => {
       checkWikipediaArticle(event.target.value)
         .then(([value, wikiData]) => {
           setWikislug(value)
-          setWikiInfo({ message: wikiData.title, error: false })
+          setWikiInfo({ message: wikiData.title, type: "success" })
         })
         .catch((err: any) => {
-          setWikiInfo({ message: err.message, error: true })
+          setWikiInfo({ message: err.message, type: "error" })
         }).finally(() => {
           const open = checking[0];
           setChecking([open, false])
         })
     }, 500))  }
 
-  const quoteLength = 150;
   const handleQuote = (event: React.ChangeEvent<HTMLInputElement>) =>  {
+    const message = `Must be under ${quoteLength} characters`;
     if (event.target.value.length > 150) {
-      setQuoteInfo({ message: "Quote must not exceed "+ quoteLength + " characters", error: true})
+      setQuoteInfo({ message, type: "error"})
+    } else if (event.target.value.length > 0) {
+      setQuoteInfo({ message, type: "success"})
     } else {
-      setQuoteInfo(undefined)
+      setQuoteInfo({ message: "Optional: " + message, type: "info"})
     }
     setQuote(event.target.value)
   }
@@ -80,7 +85,6 @@ export function PredictionSubmissionComponent() {
   const handleSubmission = () => {
     setError(undefined);
     setSubmitting(true);
-    setOpenLibInfo(undefined);
     if (wikislug && openlibraryid) {
       createPrediction({
         openlibraryid,
@@ -101,7 +105,7 @@ export function PredictionSubmissionComponent() {
   return (
     <Card sx={{
       width: "100%"
-    }}>
+    }} >
       <CardHeader title="Submit a Prediction" />
       <CardContent>
         {error && <Alert sx={{ width: "100%", marginBottom: 2 }} severity="error">{error}</Alert>}
@@ -113,7 +117,7 @@ export function PredictionSubmissionComponent() {
           label="Open Library Works Id or Url" 
           variant="filled"
           required/>
-        {openlibInfo && <Alert sx={{ width: "100%", marginBottom: 2 }} severity={openlibInfo.error ? "error" : "success"}>{openlibInfo.message}</Alert>}
+        <Alert sx={{ marginBottom: 2 }} severity={openlibInfo.type}>{openlibInfo.message}</Alert>
 
         <TextField 
           value={wikislug}
@@ -123,7 +127,7 @@ export function PredictionSubmissionComponent() {
           label="Wikipedia Page Slug or Url" 
           variant="filled" 
           required/>
-        {wikiInfo && <Alert sx={{ width: "100%", marginBottom: 2 }} severity={wikiInfo.error ? "error" : "success"}>{wikiInfo.message}</Alert>}
+        <Alert sx={{ marginBottom: 2 }} severity={wikiInfo.type}>{wikiInfo.message}</Alert>
   
         <TextField 
           value={quote}
@@ -133,11 +137,11 @@ export function PredictionSubmissionComponent() {
           label="Quote" 
           variant="filled" 
           multiline/></>}
-        {quoteInfo && <Alert sx={{ width: "100%", marginBottom: 2 }} severity={quoteInfo.error ? "error" : "success"}>{quoteInfo.message}</Alert>}
+        <Alert sx={{ marginBottom: 2 }} severity={quoteInfo.type}>{quoteInfo.message}</Alert>
         {submitting && <CircularProgress />}
       </CardContent>
       <CardActions>
-        {!submitting && <Button onClick={handleSubmission} disabled={checking.includes(true) || !openlibInfo || openlibInfo.error || !wikiInfo || wikiInfo.error || (quoteInfo && quoteInfo.error)}>Submit</Button>}
+        {!submitting && <Button onClick={handleSubmission} disabled={checking.includes(true) || openlibInfo.type === "error" || wikiInfo.type === "error" || quoteInfo.type === "error"}>Submit</Button>}
       </CardActions>
     </Card>)
 }
