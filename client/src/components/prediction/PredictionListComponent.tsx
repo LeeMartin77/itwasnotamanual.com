@@ -1,6 +1,6 @@
 import { Prediction } from "../../../../types/prediction";
 import { PredictionListItemComponent } from "./PredictionListItemComponent";
-import { Alert, Button, Card, CardActions, CardContent, CircularProgress, List, Link } from '@mui/material';
+import { Alert, Button, Card, CardContent, CircularProgress, List, Link } from '@mui/material';
 import { useEffect, useState } from "react";
 import { getPredictions } from "../../functions/getPredictions";
 import { Link as RouterLink } from "react-router-dom";

@@ -69,8 +69,12 @@ export async function checkWikipediaArticle(potentialWikipediaValue: string): Pr
   return [potentialWikipediaValue, wikiResult];
 }
 
+const requiredHeaders = {
+  "Api-User-Agent": "admin@itwasnotamanual.com"
+}
+
 export async function getWikipediaSummary(wikiPageSlug: string): Promise<WikipediaSummaryResponse> {
-  const response = await fetch(wikipediaSummaryUrl + wikiPageSlug);
+  const response = await fetch(wikipediaSummaryUrl + wikiPageSlug, { headers: requiredHeaders });
   if (!response.ok) {
     throw Error("Something went wrong")
   }
@@ -78,7 +82,7 @@ export async function getWikipediaSummary(wikiPageSlug: string): Promise<Wikiped
 }
 
 export async function getWikipediaMedia(wikiPageSlug: string): Promise<WikipediaMediaResponse> {
-  const response = await fetch(wikipediaMediaUrl + wikiPageSlug);
+  const response = await fetch(wikipediaMediaUrl + wikiPageSlug, { headers: requiredHeaders });
   if (!response.ok) {
     throw Error("Something went wrong")
   }

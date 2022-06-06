@@ -22,8 +22,12 @@ export interface WikipediaSummaryResponse {
   extract: string
 }
 
+const requiredHeaders = {
+  "Api-User-Agent": "admin@itwasnotamanual.com"
+}
+
 export async function getWikipediaSummary(wikiPageSlug: string): Promise<WikipediaSummaryResponse> {
-  const result = await fetch(wikipediaSummaryUrl + wikiPageSlug);
+  const result = await fetch(wikipediaSummaryUrl + wikiPageSlug, { headers: requiredHeaders });
   if (!result.ok) {
     throw new Error("Could not get wikipedia summary")
   }

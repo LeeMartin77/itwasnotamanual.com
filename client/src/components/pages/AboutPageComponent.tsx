@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import { Card, CardContent, CardHeader, Link, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import LinkIcon from '@mui/icons-material/Link';
 
 export function AboutPageComponent() {
@@ -25,7 +25,7 @@ export function AboutPageComponent() {
           </ListItem>
       </List>)
       }
-      
+      <p>Need to get in touch? <Link href="mailto:admin@itwasnotamanual.com">admin@itwasnotamanual.com</Link></p>
     </CardContent>
   </Card>)
 }
