@@ -17,6 +17,9 @@ export function PredictionSubmissionComponent() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
+  const [quoteInfo, setQuoteInfo] = useState<{message: string, error: boolean} | undefined>(undefined);
+  const [checking, setChecking] = useState([false, false]);
+
   const [openlibtimeout, setOpenLibTimeout] = useState<NodeJS.Timeout | undefined>(undefined);
   const [openlibInfo, setOpenLibInfo] = useState<{message: string, error: boolean} | undefined>(undefined);
 
@@ -25,6 +28,8 @@ export function PredictionSubmissionComponent() {
 
   const handleOpenLibId = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (openlibtimeout) { clearTimeout(openlibtimeout) }
+    const wiki= checking[1];
+    setChecking([true, wiki])
     setOpenlibraryid(event.target.value)
     setOpenLibTimeout(setTimeout(() => {
       checkOpenLibraryValue(event.target.value)
@@ -34,6 +39,9 @@ export function PredictionSubmissionComponent() {
         })
         .catch((err: any) => {
           setOpenLibInfo({ message: err.message, error: true })
+        }).finally(() => {
+          const wiki = checking[1];
+          setChecking([false, wiki])
         })
     }, 500))
   }
@@ -41,6 +49,8 @@ export function PredictionSubmissionComponent() {
   const handleWikislug = (event: React.ChangeEvent<HTMLInputElement>) => { 
     if (wikitimeout) { clearTimeout(wikitimeout) }
     setWikislug(event.target.value)
+    const open = checking[0];
+    setChecking([open, true])
     setWikiTimeout(setTimeout(() => {
       checkWikipediaArticle(event.target.value)
         .then(([value, wikiData]) => {
@@ -49,9 +59,22 @@ export function PredictionSubmissionComponent() {
         })
         .catch((err: any) => {
           setWikiInfo({ message: err.message, error: true })
+        }).finally(() => {
+          const open = checking[0];
+          setChecking([open, false])
         })
     }, 500))  }
-  const handleQuote = (event: React.ChangeEvent<HTMLInputElement>) => setQuote(event.target.value)
+
+  const quoteLength = 150;
+  const handleQuote = (event: React.ChangeEvent<HTMLInputElement>) =>  {
+    if (event.target.value.length > 150) {
+      setQuoteInfo({ message: "Quote must not exceed "+ quoteLength + " characters", error: true})
+    } else {
+      setQuoteInfo(undefined)
+    }
+    setQuote(event.target.value)
+  }
+
 
 
   const handleSubmission = () => {
@@ -110,10 +133,11 @@ export function PredictionSubmissionComponent() {
           label="Quote" 
           variant="filled" 
           multiline/></>}
+        {quoteInfo && <Alert sx={{ width: "100%", marginBottom: 2 }} severity={quoteInfo.error ? "error" : "success"}>{quoteInfo.message}</Alert>}
         {submitting && <CircularProgress />}
       </CardContent>
       <CardActions>
-        {!submitting && <Button onClick={handleSubmission} disabled={!openlibInfo || openlibInfo.error || !wikiInfo || wikiInfo.error}>Submit</Button>}
+        {!submitting && <Button onClick={handleSubmission} disabled={checking.includes(true) || !openlibInfo || openlibInfo.error || !wikiInfo || wikiInfo.error || (quoteInfo && quoteInfo.error)}>Submit</Button>}
       </CardActions>
     </Card>)
 }

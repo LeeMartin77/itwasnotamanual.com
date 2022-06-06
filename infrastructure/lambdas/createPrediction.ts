@@ -30,7 +30,7 @@ export async function main (
   if (!openlibraryid || !wiki) {
     return formatResponse({ message: `Missing required field "openlibraryid" or "wiki"`}, 400)
   }
-  const maxQuoteLength = 280;
+  const maxQuoteLength = 150;
   if (quote && quote.length > maxQuoteLength) {
     return formatResponse({ message: `Quote must be less than ${maxQuoteLength} characters`}, 400)
   }
