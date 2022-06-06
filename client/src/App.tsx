@@ -66,6 +66,7 @@ function App() {
 
   const containerClassName = isDesktop ? "main-container-nonmobile" : "main-container-mobile";
 
+  const mainSx = isDesktop ? {} : {minWidth: "100%"}
   return (
     <ThemeProvider theme={theme}>
         <CssBaseline />
@@ -73,7 +74,7 @@ function App() {
 
           <Box sx={{ display: 'flex' }}>
           {isDesktop && <SideNavigationComponent />}
-          <Box component="main">
+          <Box component="main" sx={mainSx}>
             <Container maxWidth={'sm'} className={containerClassName} >
             <Routes>
               <Route path="/about" element={<AboutPageComponent/>} />
