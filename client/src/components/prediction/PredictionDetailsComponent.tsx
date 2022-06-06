@@ -28,6 +28,17 @@ export function PredictionDetailsComponent({
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
   
+  const [isShort, setShort] = useState(window.innerHeight < 720);
+
+  const updateMedia = () => {
+    setShort(window.innerHeight < 720);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", updateMedia);
+    return () => window.removeEventListener("resize", updateMedia);
+  }, [setShort]);
+
   useEffect(() => {
     fnGetPredictionDetails(prediction)
       .then((details) => {
@@ -53,7 +64,7 @@ export function PredictionDetailsComponent({
           {!loading && error && <Alert style={{marginBottom: 16}} severity="error">Error loading details</Alert>}
           {!loading && !error && predictionDetail && <>
           {predictionDetail.subject.image_url && <Box
-            className="stacked-prediction-image-box"
+            className={isShort ? "stacked-prediction-image-box-short-screen" : "stacked-prediction-image-box"}
           >
             <img className="prediction-subject-img"
             src={predictionDetail.subject.image_url}
@@ -64,9 +75,9 @@ export function PredictionDetailsComponent({
             alt={predictionDetail.book.title + " Cover"} />}
             </Box>}
           {!predictionDetail.subject.image_url && predictionDetail.book.cover_url_lg && <Box
-            className="cover-only-prediction-image-box"
+            className={isShort ? "cover-only-prediction-image-box-short-screen" : "cover-only-prediction-image-box"}
             >
-              <img className="prediction-book-solo-img"
+              <img className={"prediction-book-solo-img"}
               src={predictionDetail.book.cover_url_lg}
               alt={predictionDetail.book.title + " Cover"}/>
             </Box>}
