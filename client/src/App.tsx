@@ -12,7 +12,7 @@ import { Prediction } from "../../types/prediction";
 import { PredictionListComponent } from "./components/prediction/PredictionListComponent";
 import { getPredictionFromUrl } from "./functions/getPredictions";
 import { ThemeProvider } from "@emotion/react";
-import { Container, createTheme, CssBaseline, CircularProgress, Alert, Box } from "@mui/material";
+import { Container, createTheme, CssBaseline, Box } from "@mui/material";
 import { BottomNavigationComponent } from "./components/navigation/BottomNavigationComponent";
 import { SideNavigationComponent } from "./components/navigation/SideNavigationComponent";
 import { PredictionSubmissionComponent } from "./components/prediction/PredictionSubmissionComponent";
@@ -40,13 +40,10 @@ function PredictionRouteChildComponent() {
       .catch(() => setError(true));
   }, [setPrediction, setLoading, setError, predictionUrl, navigate]);
 
-  return !loading && !error && prediction ? (
-    <PredictionDetailsComponent prediction={prediction} />
-  ) : error ? (
-    <Alert severity="error">Error loading prediction</Alert>
-  ) : (
-    <CircularProgress />
-  );
+  return <PredictionDetailsComponent 
+    prediction={prediction} 
+    predictionLoading={loading} 
+    predictionError={error}/>;
 }
 
 const theme = createTheme({

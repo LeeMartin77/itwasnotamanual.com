@@ -1,4 +1,4 @@
-import { Alert, Button, Card, CardActions, CircularProgress } from "@mui/material";
+import { Button, Card, CardActions } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { Prediction } from "../../../../types/prediction";
 import { getPredictionVoteOrRandom, submitVote } from "../../functions/getPredictions";
@@ -35,22 +35,32 @@ function VoteControls(
         icon: RefreshIcon
       }
     }
-    if (!loading && canVote && voteToken) {
-      return <Card style={{marginTop: "1rem"}}>
+    if (canVote && voteToken) {
+      return <Card style={{marginTop: "1rem", width: "100%"}}>
         <CardActions style={{display:"flex"}}>
-          <Button onClick={choices.negative.onClick} endIcon={<choices.negative.icon />} variant="outlined" color="error">{choices.negative.label}</Button>
-          <Button onClick={choices.positive.onClick} startIcon={<choices.positive.icon />} style={{marginLeft: "auto", marginRight: "0"}} variant="outlined" color="success">{choices.positive.label}</Button>
+          <Button onClick={choices.negative.onClick}
+            endIcon={<choices.negative.icon />}  
+            disabled={loading} 
+            variant="outlined" 
+            color="error">{choices.negative.label}</Button>
+          <Button onClick={choices.positive.onClick}
+            startIcon={<choices.positive.icon />}
+            style={{marginLeft: "auto", marginRight: "0"}} 
+            disabled={loading} 
+            variant="outlined"
+            color="success">{choices.positive.label}</Button>
         </CardActions>
       </Card>
     }
-    if (!loading && (!canVote || !voteToken)) {
-      return <Card>
-        <CardActions style={{display: "flex"}}>
-        <Button onClick={choices.refresh.onClick} startIcon={<choices.refresh.icon />} style={{marginLeft: "auto", marginRight: "auto", width: "100%"}} variant="outlined">{choices.refresh.label}</Button>
-        </CardActions>
-      </Card>
-    }
-    return <></>
+    return <Card style={{marginTop: "1rem", width: "100%"}}>
+      <CardActions style={{display: "flex", width: "100%"}}>
+        <Button onClick={choices.refresh.onClick} 
+          startIcon={<choices.refresh.icon />} 
+          style={{marginLeft: "auto", marginRight: "auto", width: "100%"}} 
+          disabled={loading} 
+          variant="outlined">{choices.refresh.label}</Button>
+      </CardActions>
+    </Card>
 }
 
 export function PredictionRankingComponent() {
@@ -96,13 +106,12 @@ export function PredictionRankingComponent() {
     loadPredictionVote()
   }, [loadPredictionVote]);
 
-  return <>{!loading && !error && prediction ? (
-    <PredictionDetailsComponent prediction={prediction} hasLink={true} />
-  ) : error ? (
-    <Alert severity="error">Error loading prediction</Alert>
-  ) : (
-    <CircularProgress />
-  )}
+  return <>
+  <PredictionDetailsComponent 
+    prediction={prediction} 
+    hasLink={true} 
+    predictionLoading={loading} 
+    predictionError={error}/>
   <VoteControls 
     userId={userId} 
     voteToken={voteToken}

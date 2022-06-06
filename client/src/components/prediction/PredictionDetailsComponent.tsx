@@ -11,7 +11,9 @@ import { wikipediaLinkFromSlug } from "../../functions/thirdPartyDataAccess/wiki
 import { openLibraryLinkFromWorksId } from "../../functions/thirdPartyDataAccess/openlibrary";
 
 interface PredictionDetailsProps {
-  prediction: Prediction;
+  prediction?: Prediction;
+  predictionLoading?: boolean;
+  predictionError?: boolean;
   hasLink?: boolean;
   fnGetPredictionDetails?: (
     prediction: Prediction
@@ -20,6 +22,8 @@ interface PredictionDetailsProps {
 
 export function PredictionDetailsComponent({
   prediction,
+  predictionLoading,
+  predictionError,
   hasLink = false,
   fnGetPredictionDetails = getPredictionDetails,
 }: PredictionDetailsProps) {
@@ -42,12 +46,17 @@ export function PredictionDetailsComponent({
   }, [setShort]);
 
   useEffect(() => {
-    fnGetPredictionDetails(prediction)
+    setPredictionDetail(undefined);
+    setLoading(true);
+    setError(false);
+    if (prediction) {
+      fnGetPredictionDetails(prediction)
       .then((details) => {
         setPredictionDetail(details);
         setLoading(false);
       })
       .catch(() => setError(true));
+    }
   }, [
     fnGetPredictionDetails,
     setPredictionDetail,
@@ -57,12 +66,21 @@ export function PredictionDetailsComponent({
   ]);
   return (
     <Card>
-      <CardHeader title={prediction.wiki_title + " in " + prediction.book_title} subheader={!loading && !error && predictionDetail && "Written by " + predictionDetail.book.authors
+      <CardHeader 
+        title={prediction ? prediction.wiki_title + " in " + prediction.book_title : "Loading Prediction"} 
+        subheader={!loading && !error && predictionDetail && "Written by " + predictionDetail.book.authors
               .map((x) => x.personal_name)
               .join(", ")}/>
       <CardContent>
-          {!prediction.moderated && <Alert style={{marginBottom: 16}} severity="warning">Prediction is awaiting moderation</Alert>}
-          {loading && <CircularProgress />}
+          {prediction && !prediction.moderated && <Alert style={{marginBottom: 16}} severity="warning">Prediction is awaiting moderation</Alert>}
+          {loading && <Box sx={{
+              width: "100%", 
+              display: "flex", 
+              alignItems: "center",
+              minHeight: "200px"
+              }}>
+            <CircularProgress sx={{marginLeft: "auto", marginRight: "auto"}} />
+            </Box>}
           {!loading && error && <Alert style={{marginBottom: 16}} severity="error">Error loading details</Alert>}
           {!loading && !error && predictionDetail && <>
           {predictionDetail.subject.image_url && <Box
@@ -85,16 +103,16 @@ export function PredictionDetailsComponent({
             </Box>}
 
 
-          { predictionDetail.quote && <Typography style={{paddingTop: 16}} variant="body1">{predictionDetail.quote}</Typography>}
+          {predictionDetail.quote && <Typography style={{paddingTop: 16}} variant="body1">{predictionDetail.quote}</Typography>}
           </>
       }
       </CardContent>
       <CardActions style={{display: "flex", flexDirection: "row"}}>
         <ButtonGroup variant="contained">
-          <Button href={wikipediaLinkFromSlug(prediction.wiki)} endIcon={<LinkIcon />}>Article</Button>
-          <Button href={openLibraryLinkFromWorksId(prediction.openlibraryid)} endIcon={<LinkIcon />}>Book</Button>
+          <Button href={prediction && wikipediaLinkFromSlug(prediction.wiki)} disabled={!prediction} endIcon={<LinkIcon />}>Article</Button>
+          <Button href={prediction && openLibraryLinkFromWorksId(prediction.openlibraryid)} disabled={!prediction} endIcon={<LinkIcon />}>Book</Button>
         </ButtonGroup>
-        {hasLink &&
+        {prediction && hasLink &&
           <Button onClick={() => navigate("/prediction/" + prediction.pageUrl)} style={{marginLeft: "auto", marginRight:"0"}} variant="text">Page</Button>
         }
       </CardActions>
