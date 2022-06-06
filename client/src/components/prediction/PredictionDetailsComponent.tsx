@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import {
-useNavigate,
+  useNavigate,
 } from "react-router-dom";
 import { getPredictionDetails } from "../../functions/getPredictionDetails";
 import { Prediction, PredictionDetail } from "../../../../types/prediction";
-import { Alert, Box, Button, Card, CardActions, CardContent, CardHeader, CircularProgress, Typography } from '@mui/material';
-
+import { Alert, Box, Button, ButtonGroup, Card, CardActions, CardContent, CardHeader, CircularProgress, Typography } from '@mui/material';
+import LinkIcon from '@mui/icons-material/Link';
 import "./PredictionDetailsComponent.css"
+import { wikipediaLinkFromSlug } from "../../functions/thirdPartyDataAccess/wikipedia";
+import { openLibraryLinkFromWorksId } from "../../functions/thirdPartyDataAccess/openlibrary";
 
 interface PredictionDetailsProps {
   prediction: Prediction;
@@ -87,10 +89,13 @@ export function PredictionDetailsComponent({
           </>
       }
       </CardContent>
-      <CardActions>
-        {hasLink ? 
-          <Button onClick={() => navigate("/prediction/" + prediction.pageUrl)}>Go to Page</Button> : 
-          <Button onClick={() => navigate(-1)}>Go Back</Button>
+      <CardActions style={{display: "flex", flexDirection: "row"}}>
+        <ButtonGroup variant="contained">
+          <Button href={wikipediaLinkFromSlug(prediction.wiki)} endIcon={<LinkIcon />}>Article</Button>
+          <Button href={openLibraryLinkFromWorksId(prediction.openlibraryid)} endIcon={<LinkIcon />}>Book</Button>
+        </ButtonGroup>
+        {hasLink &&
+          <Button onClick={() => navigate("/prediction/" + prediction.pageUrl)} style={{marginLeft: "auto", marginRight:"0"}} variant="outlined">Link</Button>
         }
       </CardActions>
     </Card>

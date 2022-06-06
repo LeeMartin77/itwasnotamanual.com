@@ -36,6 +36,10 @@ export interface OpenLibraryAuthorResponse {
   }
 }
 
+export function openLibraryLinkFromWorksId(openLibraryId: string): string {
+  return openlibrarybase + "/works/" + openLibraryId;
+}
+
 export async function checkOpenLibraryValue(potentialWorksId: string): Promise<[string, OpenLibraryBooksResponse]> {
   if (potentialWorksId.startsWith(openlibrarybase)) {
     potentialWorksId = potentialWorksId.replace(openlibrarybase, '')

@@ -38,8 +38,13 @@ export interface WikipediaMediaResponse {
   }[]
 }
 
+const wikipediaRoot = "https://en.wikipedia.org/wiki"
+
+export function wikipediaLinkFromSlug(wikiSlug: string): string {
+  return wikipediaRoot + "/" + wikiSlug;
+}
+
 export async function checkWikipediaArticle(potentialWikipediaValue: string): Promise<[string, WikipediaSummaryResponse]> {
-  const wikipediaRoot = "https://en.wikipedia.org/wiki"
   if (potentialWikipediaValue.startsWith(wikipediaRoot)) {
     potentialWikipediaValue = potentialWikipediaValue.replace(wikipediaRoot, '')
   }
