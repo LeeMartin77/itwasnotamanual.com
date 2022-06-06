@@ -1,5 +1,5 @@
 
-import { Alert, AlertColor, Button, Card, CardActions, CardContent, CardHeader, CircularProgress, Link, TextField } from '@mui/material';
+import { Alert, AlertColor, Button, Card, CardContent, CardHeader, CircularProgress, Link, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPrediction } from '../../functions/createPrediction';
@@ -139,9 +139,7 @@ export function PredictionSubmissionComponent() {
           multiline/></>}
         <Alert sx={{ marginBottom: 2 }} severity={quoteInfo.type}>{quoteInfo.message}</Alert>
         {submitting && <CircularProgress />}
+        {!submitting && <Button sx={{marginLeft: 0, marginRight: 0, width: "100%"}} onClick={handleSubmission} variant="contained" disabled={checking.includes(true) || openlibInfo.type !== "success" || wikiInfo.type !== "success" || quoteInfo.type === "error"}>Submit</Button>}
       </CardContent>
-      <CardActions>
-        {!submitting && <Button onClick={handleSubmission} disabled={checking.includes(true) || openlibInfo.type === "error" || wikiInfo.type === "error" || quoteInfo.type === "error"}>Submit</Button>}
-      </CardActions>
     </Card>)
 }
