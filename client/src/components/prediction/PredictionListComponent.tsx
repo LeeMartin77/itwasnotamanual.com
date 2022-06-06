@@ -41,11 +41,9 @@ export function PredictionListComponent() {
         </List>
         {error && <Alert severity="error">Error loading predictions</Alert>}
         {loading && <CircularProgress />}
-      </CardContent>
-      <CardActions>
         {!loading && !lastEvaluated && <Alert severity="info">No more predictions: <Link component={RouterLink} to="/submit">Why not add one?</Link></Alert>}
         {lastEvaluated && <Button sx={{marginLeft: 0, marginRight: 0, width: "100%"}} onClick={loadMore} variant="outlined" disabled={loading}>Load More</Button>}
-      </CardActions>
+      </CardContent>
     </Card>
   );
 }
