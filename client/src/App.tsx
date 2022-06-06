@@ -17,6 +17,7 @@ import { BottomNavigationComponent } from "./components/navigation/BottomNavigat
 import { SideNavigationComponent } from "./components/navigation/SideNavigationComponent";
 import { PredictionSubmissionComponent } from "./components/prediction/PredictionSubmissionComponent";
 import { PredictionRankingComponent } from "./components/prediction/PredictionRankingComponent";
+import { AboutPageComponent } from "./components/pages/AboutPageComponent";
 
 function PredictionListRouteChildComponent() {
   const [predictions, setPredictions] = useState<Prediction[]>([]);
@@ -103,6 +104,7 @@ function App() {
           <Box component="main">
             <Container maxWidth={'sm'} className={containerClassName} >
             <Routes>
+              <Route path="/about" element={<AboutPageComponent/>} />
               <Route path="/submit" element={<PredictionSubmissionComponent />}/>
               <Route
                 path="/prediction/:predictionUrl"
