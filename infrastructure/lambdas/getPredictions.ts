@@ -7,12 +7,21 @@ import { mapDynamoToObject } from "./shared/mapDynamoToObject";
 const dynamo = new AWS.DynamoDB();
 
 export async function main (
-  _event: APIGatewayProxyEventV2,
+  event: APIGatewayProxyEventV2,
   _context: Context,
   _callback: Callback
 ): Promise<any> { 
-  // TODO: Pagination
-  //const lastEvaluated  = event.queryStringParameters && event.queryStringParameters.LastEvaluatedKey
+  let ExclusiveStartKey;
+  if (event.queryStringParameters) {
+    const { pageUrl, sort_key } = event.queryStringParameters
+    if (pageUrl && sort_key) {
+      ExclusiveStartKey = {
+        pageUrl: { S: decodeURI(pageUrl) },
+        sort_key: { S: decodeURI(sort_key).replace(/SEPARATOR/gi, "#") },
+        global_partition: { S: "0" }
+      }
+    }
+  }
   var params: AWS.DynamoDB.Types.QueryInput = {
     ExpressionAttributeValues: {
       ':moded' : { BOOL: true },
@@ -23,15 +32,15 @@ export async function main (
     ScanIndexForward: false, 
     TableName: process.env.PREDICTIONS_TABLE_NAME!,
     FilterExpression: 'moderated = :moded',
-    Limit: 50,
-    //ExclusiveStartKey: lastEvaluated
+    Limit: 20,
+    ExclusiveStartKey
   };
   try {
     const result = await dynamo.query(params).promise();
 
     const predictions = result.Items;
     if (predictions) {
-      return formatResponse({Items: predictions.map(mapDynamoToObject), LastEvaluatedKey: result.LastEvaluatedKey});
+      return formatResponse({Items: predictions.map(mapDynamoToObject), LastEvaluatedKey: result.LastEvaluatedKey && mapDynamoToObject(result.LastEvaluatedKey)});
     }
   }
   catch (ex: any) {

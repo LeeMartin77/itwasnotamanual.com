@@ -4,7 +4,7 @@ const API_ROOT_URL = process.env.REACT_APP_API_ROOT_URL || "https://api.itwasnot
 
 interface PaginatedResult<T> {
   Items: T[],
-  LastEvaluatedKey?: any
+  LastEvaluatedKey?: {[key: string]: string}
 }
 
 interface VoteResult {
@@ -13,8 +13,12 @@ interface VoteResult {
   hasVote: boolean
 }
 
-export async function getPredictions(): Promise<PaginatedResult<Prediction>> {
-  const response = await fetch(API_ROOT_URL + '/predictions');
+export async function getPredictions(lastEvaluated: {[key: string]: string} | undefined = undefined): Promise<PaginatedResult<Prediction>> {
+  let predictionsUrl = API_ROOT_URL + '/predictions';
+  if (lastEvaluated) {
+    predictionsUrl += "?" + Object.keys(lastEvaluated).map(k => k + "=" + encodeURI(lastEvaluated[k].replaceAll("#", "SEPARATOR"))).join("&")
+  }
+  const response = await fetch(predictionsUrl);
   if (!response.ok) {
     throw Error("Something went wrong")
   }
