@@ -30,4 +30,4 @@ jobs:
       # deploy cdk
       - name: deploy
         working-directory: ./infrastructure
-        run: npm run cdk:deploy
+        run: npm run cdk:deploy -- --require-approval never
