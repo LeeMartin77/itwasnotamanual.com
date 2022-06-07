@@ -44,6 +44,7 @@ export async function main (
         if (!activeVote || !activeVote.pageUrls.SS!.includes(pageUrl) || activeVote.voteToken.S != voteToken) {
           return formatResponse({ message: "Could not find valid vote token for user and page"}, 404)
         }
+        // TODO: This isn't deleting?
         await dynamo.deleteItem({
           Key: { 
             userId: activeVote.userId,

@@ -17,7 +17,7 @@ export async function main (
     if (pageUrl && sort_key) {
       ExclusiveStartKey = {
         pageUrl: { S: decodeURI(pageUrl) },
-        sort_key: { S: decodeURI(sort_key).replace(/SEPARATOR/gi, "#") },
+        sort_key: { S: decodeURI(sort_key) },
         global_partition: { S: "0" }
       }
     }

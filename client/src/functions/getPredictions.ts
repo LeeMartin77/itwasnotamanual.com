@@ -16,7 +16,7 @@ interface VoteResult {
 export async function getPredictions(lastEvaluated: {[key: string]: string} | undefined = undefined): Promise<PaginatedResult<Prediction>> {
   let predictionsUrl = API_ROOT_URL + '/predictions';
   if (lastEvaluated) {
-    predictionsUrl += "?" + Object.keys(lastEvaluated).map(k => k + "=" + encodeURI(lastEvaluated[k].replaceAll("#", "SEPARATOR"))).join("&")
+    predictionsUrl += "?" + Object.keys(lastEvaluated).map(k => k + "=" + encodeURI(lastEvaluated[k])).join("&")
   }
   const response = await fetch(predictionsUrl);
   if (!response.ok) {
