@@ -1,19 +1,20 @@
 import { Button, Card, CardActions } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { Prediction } from "../../../../types/prediction";
-import { getPredictionVoteOrRandom, submitVote } from "../../functions/getPredictions";
+import { deleteVote, getPredictionVoteOrRandom, submitVote } from "../../functions/getPredictions";
 import { PredictionDetailsComponent } from "./PredictionDetailsComponent";
 import { v4 as randomUUID } from "uuid";
 
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
 
 const userIdIdentifier = "itwasntamanualUserId";
 
 function VoteControls(
   {userId, voteToken, canVote, loading, voteCallback, refreshCallback }: {userId: string, voteToken: string | undefined, canVote: boolean, loading: boolean
-  voteCallback: (userId: string, voteToken: string, positive: boolean) => any
+  voteCallback: (userId: string, voteToken: string, positive: boolean | undefined) => any
   refreshCallback: () => any
   }
   ) {
@@ -23,6 +24,11 @@ function VoteControls(
         label: "Approve",
         onClick: () => voteCallback(userId, voteToken!, true),
         icon: CheckCircleIcon
+      },
+      skip: {
+        label: "Skip",
+        onClick: () => voteCallback(userId, voteToken!, undefined),
+        icon: SkipNextIcon
       },
       negative: {
         label: "Disagree",
@@ -40,9 +46,15 @@ function VoteControls(
         <CardActions style={{display:"flex"}}>
           <Button onClick={choices.negative.onClick}
             endIcon={<choices.negative.icon />}  
+            style={{marginLeft: "0", marginRight: "auto"}} 
             disabled={loading} 
             variant="outlined" 
             color="error">{choices.negative.label}</Button>
+          <Button onClick={choices.skip.onClick}
+            disabled={loading} 
+            style={{marginLeft: "auto", marginRight: "auto"}} 
+            variant="text" 
+            color="info">{choices.skip.label}</Button>
           <Button onClick={choices.positive.onClick}
             startIcon={<choices.positive.icon />}
             style={{marginLeft: "auto", marginRight: "0"}} 
@@ -79,9 +91,12 @@ export function PredictionRankingComponent() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
 
-  const voteCallback = (userId: string, voteToken: string, positive: boolean) => {
+  const voteCallback = (userId: string, voteToken: string, positive: boolean | undefined) => {
     setLoading(true)
-    submitVote({ userIdentifier: userId, voteToken, pageUrl: prediction!.pageUrl, positive })
+    const promise = positive === undefined ? 
+      deleteVote({userIdentifier: userId, voteToken}) : 
+      submitVote({ userIdentifier: userId, voteToken, pageUrl: prediction!.pageUrl, positive });
+    promise
     .then(() => {
       loadPredictionVote()
     }).catch(() => {

@@ -51,13 +51,26 @@ export async function getPredictionVoteOrRandom(userIdentifier: string): Promise
 }
 
 export async function submitVote({userIdentifier, voteToken, pageUrl, positive}: { userIdentifier: string, voteToken: string, pageUrl: string, positive: boolean } ): Promise<void> {
-  // TODO this needs to call the actual endpoint with a post request
   const response = await fetch(API_ROOT_URL + '/predictionvote/submit', {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({userIdentifier, voteToken, pageUrl, positive})
+  });
+  if (!response.ok) {
+    throw Error("Something went wrong")
+  }
+}
+
+
+export async function deleteVote({userIdentifier, voteToken}: { userIdentifier: string, voteToken: string} ): Promise<void> {
+  const response = await fetch(API_ROOT_URL + '/predictionvote/delete', {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({userIdentifier, voteToken})
   });
   if (!response.ok) {
     throw Error("Something went wrong")
