@@ -15,8 +15,3 @@ The application is built around CDK, with a cloudfront hosted frontend client an
 #### TODO
 - `/books`: List of books by number of predictions
 - `/book/:url`: A single book with a list of it's predictions
-
-## More TODO
-
-- Add open library and wiki summaries under voting buttons
-  - article first
