@@ -246,5 +246,6 @@ export class APIStack extends Stack {
     });
 
     new cdk.CfnOutput(this, "ApiCloudfrontDistributionId", { value: cfDist.distributionId });
+    new cdk.CfnOutput(this, "PredictionsTableName", { value: predictionsTable.tableName });
   }
 }
