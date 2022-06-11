@@ -18,4 +18,9 @@ The application is built around CDK, with a cloudfront hosted frontend client an
 
 ## More TODO
 
-- Need a quick tool for moderating submissions
+- Add a "Skip" button
+- Add an explanation dialog when first opening page
+- Permalink needs to be clearer (call it "share")
+- Add open library and wiki summaries under voting buttons
+  - article first
+- Quote needs quotemarks/to be clearer it's a quote
