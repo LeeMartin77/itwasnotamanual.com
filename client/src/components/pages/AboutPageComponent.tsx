@@ -13,9 +13,10 @@ export function AboutPageComponent() {
     <CardContent>
       <p>This website was thrown together out of a mix of boredom and a desire to thumb my nose at the world a little. It's not intended to be taken seriously, however it's certainly a little bit concerning.</p>
       <p>This site literally wouldn't be possible without the fantastic resources of the Wikipedia and Open Library APIs - show them some love.</p>
+      <List>
       {
-        links.map(x => <List>
-          <ListItem>
+        links.map((x, i) =>
+          <ListItem key={i}>
             <ListItemButton href={x.href}>
               <ListItemIcon>
                 <LinkIcon />
@@ -23,8 +24,8 @@ export function AboutPageComponent() {
               <ListItemText primary={x.text} />
             </ListItemButton>
           </ListItem>
-      </List>)
-      }
+      )
+      }</List>
       <p>Need to get in touch? <Link href="mailto:admin@itwasnotamanual.com">admin@itwasnotamanual.com</Link></p>
     </CardContent>
   </Card>)
