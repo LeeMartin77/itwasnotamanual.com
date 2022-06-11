@@ -157,8 +157,8 @@ export class APIStack extends Stack {
       {
         handler: 'main',
         lambdaFile: 'deletePredictionVote.ts',
-        endpointPath: '/predictionvote',
-        methods: [HttpMethod.DELETE]
+        endpointPath: '/predictionvote/delete',
+        methods: [HttpMethod.POST]
       },
       {
         handler: 'main',
