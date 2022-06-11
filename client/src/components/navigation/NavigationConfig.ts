@@ -5,24 +5,24 @@ export const navigationConfig = [
     label: "Rank",
     route: "/",
     icon: Shuffle,
-    mobile: true
+    mobileHidden: false
   },
   {
     label: "List",
     route: "/predictions",
     icon: FormatListBulleted,
-    mobile: true
+    mobileHidden: false
   },
   {
     label: "Submit",
     route: "/submit",
     icon: Send,
-    mobile: true
+    mobileHidden: true
   },
   {
     label: "About",
     route: "/about",
     icon: Info,
-    mobile: false
+    mobileHidden: true
   }
 ]
