@@ -18,6 +18,7 @@ import { SideNavigationComponent } from "./components/navigation/SideNavigationC
 import { PredictionSubmissionComponent } from "./components/prediction/PredictionSubmissionComponent";
 import { PredictionRankingComponent } from "./components/prediction/PredictionRankingComponent";
 import { AboutPageComponent } from "./components/pages/AboutPageComponent";
+import { FirstTimeModalComponent } from "./components/FirstTimeModalComponent";
 
 function PredictionRouteChildComponent() {
   const navigate = useNavigate();
@@ -70,6 +71,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
         <CssBaseline />
+        <FirstTimeModalComponent />
         <BrowserRouter>
 
           <Box sx={{ display: 'flex' }}>

@@ -19,6 +19,5 @@ The application is built around CDK, with a cloudfront hosted frontend client an
 ## More TODO
 
 - Add a "Skip" button
-- Add an explanation dialog when first opening page
 - Add open library and wiki summaries under voting buttons
   - article first
