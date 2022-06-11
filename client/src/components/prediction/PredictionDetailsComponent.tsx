@@ -113,7 +113,7 @@ export function PredictionDetailsComponent({
           <Button href={prediction && openLibraryLinkFromWorksId(prediction.openlibraryid)} disabled={!prediction} endIcon={<LinkIcon />}>Book</Button>
         </ButtonGroup>
         {prediction && hasLink &&
-          <Button onClick={() => navigate("/prediction/" + prediction.pageUrl)} style={{marginLeft: "auto", marginRight:"0"}} variant="text">Page</Button>
+          <Button onClick={() => navigate("/prediction/" + prediction.pageUrl)} style={{marginLeft: "auto", marginRight:"0"}} variant="text">Share</Button>
         }
       </CardActions>
     </Card>
