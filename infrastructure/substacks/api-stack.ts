@@ -156,6 +156,12 @@ export class APIStack extends Stack {
       },
       {
         handler: 'main',
+        lambdaFile: 'deletePredictionVote.ts',
+        endpointPath: '/predictionvote',
+        methods: [HttpMethod.DELETE]
+      },
+      {
+        handler: 'main',
         lambdaFile: 'submitPredictionVote.ts',
         endpointPath: '/predictionvote/submit',
         methods: [HttpMethod.POST]
