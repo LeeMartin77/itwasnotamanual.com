@@ -28,6 +28,20 @@
   right: 0;
 }
 
+.prediction-quote {
+  padding: 1rem;
+  font-style: italic;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.prediction-quote-start-mark {
+  transform: scaleX(-1);
+}
+
+.prediction-quote-end-mark {
+  transform: scaleY(-1);
+}
+
 .cover-only-prediction-image-box-short-screen {
   position: relative;
   overflow: hidden;

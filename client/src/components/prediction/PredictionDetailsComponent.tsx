@@ -9,6 +9,7 @@ import LinkIcon from '@mui/icons-material/Link';
 import "./PredictionDetailsComponent.css"
 import { wikipediaLinkFromSlug } from "../../functions/thirdPartyDataAccess/wikipedia";
 import { openLibraryLinkFromWorksId } from "../../functions/thirdPartyDataAccess/openlibrary";
+import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 
 interface PredictionDetailsProps {
   prediction?: Prediction;
@@ -103,7 +104,11 @@ export function PredictionDetailsComponent({
             </Box>}
 
 
-          {predictionDetail.quote && <Typography style={{paddingTop: 16}} variant="body1">{predictionDetail.quote}</Typography>}
+          {predictionDetail.quote && <Typography style={{marginTop: 16}} variant="body1" className="prediction-quote">
+            <FormatQuoteIcon className="prediction-quote-start-mark" fontSize="small" />
+              {predictionDetail.quote}
+            <FormatQuoteIcon className="prediction-quote-end-mark" fontSize="small" />
+            </Typography>}
           </>
       }
       </CardContent>
