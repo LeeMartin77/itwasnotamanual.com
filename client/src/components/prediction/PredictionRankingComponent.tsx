@@ -126,14 +126,16 @@ export function PredictionRankingComponent() {
     prediction={prediction} 
     hasLink={true} 
     predictionLoading={loading} 
-    predictionError={error}/>
-  <VoteControls 
-    userId={userId} 
-    voteToken={voteToken}
-    canVote={canVote}
-    loading={loading}
-    voteCallback={voteCallback}
-    refreshCallback={loadPredictionVote}
-  />
+    predictionError={error}
+    RankingControlComponent={
+      <VoteControls 
+        userId={userId} 
+        voteToken={voteToken}
+        canVote={canVote}
+        loading={loading}
+        voteCallback={voteCallback}
+        refreshCallback={loadPredictionVote}
+      />}
+    />
   </>;
 }

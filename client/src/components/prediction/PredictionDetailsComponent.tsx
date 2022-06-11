@@ -1,21 +1,24 @@
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import {
   useNavigate,
 } from "react-router-dom";
 import { getPredictionDetails } from "../../functions/getPredictionDetails";
 import { Prediction, PredictionDetail } from "../../../../types/prediction";
-import { Alert, Box, Button, ButtonGroup, Card, CardActions, CardContent, CardHeader, CircularProgress, Typography } from '@mui/material';
-import LinkIcon from '@mui/icons-material/Link';
+import { Alert, Box, Button, Card, CardActions, CardContent, CardHeader, CircularProgress, IconButton, Typography } from '@mui/material';
 import "./PredictionDetailsComponent.css"
+import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
+import LinkIcon from '@mui/icons-material/Link';
 import { wikipediaLinkFromSlug } from "../../functions/thirdPartyDataAccess/wikipedia";
 import { openLibraryLinkFromWorksId } from "../../functions/thirdPartyDataAccess/openlibrary";
-import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
+
+import ShareIcon from '@mui/icons-material/Share';
 
 interface PredictionDetailsProps {
   prediction?: Prediction;
   predictionLoading?: boolean;
   predictionError?: boolean;
   hasLink?: boolean;
+  RankingControlComponent?: ReactElement<any, any>,
   fnGetPredictionDetails?: (
     prediction: Prediction
   ) => Promise<PredictionDetail>;
@@ -26,6 +29,7 @@ export function PredictionDetailsComponent({
   predictionLoading,
   predictionError,
   hasLink = false,
+  RankingControlComponent = undefined,
   fnGetPredictionDetails = getPredictionDetails,
 }: PredictionDetailsProps) {
   const navigate = useNavigate();
@@ -65,7 +69,10 @@ export function PredictionDetailsComponent({
     setError,
     prediction,
   ]);
+
+  const shareButton = prediction && <IconButton aria-label="share" onClick={() => navigate("/prediction/" + prediction.pageUrl)} style={{position: "absolute", bottom: 0, left: 0}}><ShareIcon /></IconButton>
   return (
+    <>
     <Card>
       <CardHeader 
         title={prediction ? prediction.wiki_title + " in " + prediction.book_title : "Loading Prediction"} 
@@ -94,6 +101,8 @@ export function PredictionDetailsComponent({
             <img className="prediction-book-stacked-img"
             src={predictionDetail.book.cover_url_md}
             alt={predictionDetail.book.title + " Cover"} />}
+            {prediction && hasLink && shareButton}
+
             </Box>}
           {!predictionDetail.subject.image_url && predictionDetail.book.cover_url_lg && <Box
             className={isShort ? "cover-only-prediction-image-box-short-screen" : "cover-only-prediction-image-box"}
@@ -101,6 +110,8 @@ export function PredictionDetailsComponent({
               <img className={"prediction-book-solo-img"}
               src={predictionDetail.book.cover_url_lg}
               alt={predictionDetail.book.title + " Cover"}/>
+            {prediction && hasLink && shareButton}
+
             </Box>}
 
 
@@ -112,15 +123,44 @@ export function PredictionDetailsComponent({
           </>
       }
       </CardContent>
+      {RankingControlComponent}
+    </Card>
+    {prediction && <Card style={{marginTop: "1rem"}}>
+      <CardHeader title={prediction.wiki_title} />
+      <CardContent>
+      {loading && <Box sx={{
+              width: "100%", 
+              display: "flex", 
+              alignItems: "center",
+              minHeight: "200px"
+              }}>
+            <CircularProgress sx={{marginLeft: "auto", marginRight: "auto"}} />
+            </Box>}
+      {predictionDetail && <Typography variant="body1">{predictionDetail.subject.extract}</Typography>}
+      </CardContent>
       <CardActions style={{display: "flex", flexDirection: "row"}}>
-        <ButtonGroup variant="contained">
-          <Button href={prediction && wikipediaLinkFromSlug(prediction.wiki)} disabled={!prediction} endIcon={<LinkIcon />}>Article</Button>
-          <Button href={prediction && openLibraryLinkFromWorksId(prediction.openlibraryid)} disabled={!prediction} endIcon={<LinkIcon />}>Book</Button>
-        </ButtonGroup>
-        {prediction && hasLink &&
-          <Button onClick={() => navigate("/prediction/" + prediction.pageUrl)} style={{marginLeft: "auto", marginRight:"0"}} variant="text">Share</Button>
-        }
+        <Button variant="contained" href={prediction && wikipediaLinkFromSlug(prediction.wiki)} disabled={!prediction} endIcon={<LinkIcon />}>Wikipedia</Button>
       </CardActions>
     </Card>
+    }
+    {prediction && <Card style={{marginTop: "1rem"}}>
+      <CardHeader title={prediction.book_title} />
+      <CardContent>
+      {loading && <Box sx={{
+              width: "100%", 
+              display: "flex", 
+              alignItems: "center",
+              minHeight: "200px"
+              }}>
+            <CircularProgress sx={{marginLeft: "auto", marginRight: "auto"}} />
+            </Box>}
+      {predictionDetail && <Typography variant="body1">{predictionDetail.book.description.split("----")[0]}</Typography>}
+      </CardContent>
+      <CardActions style={{display: "flex", flexDirection: "row"}}>
+        <Button variant="contained" href={prediction && openLibraryLinkFromWorksId(prediction.openlibraryid)} disabled={!prediction} endIcon={<LinkIcon />}>OpenLibrary</Button>
+      </CardActions>
+    </Card>
+    }
+    </>
   );
 }

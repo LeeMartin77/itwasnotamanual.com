@@ -22,10 +22,12 @@ export async function getPredictionDetails(
     book: {
       title: "",
       authors: [],
+      description: ""
     },
     subject: {
       title: "",
       image_url: "",
+      extract: ""
     },
   };
   // TODO: I mean there is a lot to do but rather than a massive chain we could
@@ -43,6 +45,7 @@ export async function getPredictionDetails(
     );
   }
   loadedDetails.book.title = data.title;
+  loadedDetails.book.description = typeof data.description === "string" ? data.description : (data.description as any).value;
 
   // TODO: We'll need to change this to load many, but one will do for now
   const author_data = await fnGetOpenLibraryAuthorByKey(
@@ -53,6 +56,7 @@ export async function getPredictionDetails(
 
   const wikidata = await fnGetWikipediaSummary(prediction.wiki);
   loadedDetails.subject.title = wikidata.title;
+  loadedDetails.subject.extract = wikidata.extract;
 
   const wikimedia = await fnGetWikipediaMedia(prediction.wiki);
 

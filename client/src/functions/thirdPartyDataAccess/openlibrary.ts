@@ -15,6 +15,8 @@ export interface OpenLibraryBooksResponse {
   isbn_10: string[]
   isbn_13: string[]
   title: string
+  description: string | { type: "/type/text", value: string },
+
   publish_date?: string
   // This key can be added to the base openlibrary with a .json to get details
   authors: {author: {key: string }, type: { key: string }}[]

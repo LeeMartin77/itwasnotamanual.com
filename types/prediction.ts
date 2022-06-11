@@ -21,9 +21,11 @@ export interface PredictionDetail extends Prediction {
     cover_url_lg?: string
     title: string
     authors: { personal_name: string }[]
+    description: string
   }
   subject: {
     title: string
     image_url?: string
+    extract: string
   }
 }
