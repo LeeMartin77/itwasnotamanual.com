@@ -202,7 +202,7 @@ export class APIStack extends Stack {
     const cachePolicy = new cloudfront.CachePolicy(this, 'defaultCachePolicy', {
       maxTtl: cdk.Duration.hours(8),
       // This is more to stop things getting absolutely clobbered
-      defaultTtl: cdk.Duration.minutes(30),
+      defaultTtl: cdk.Duration.minutes(5),
     })
 
     const responseHeadersPolicy = new cloudfront.ResponseHeadersPolicy(this, 'CloudfrontCorsHeaders', {
