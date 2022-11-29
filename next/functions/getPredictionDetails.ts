@@ -1,4 +1,4 @@
-import { Prediction, PredictionDetail } from "../../../types/prediction";
+import { Prediction, PredictionDetail } from "../types/prediction";
 import {
   formatOpenLibraryCoverUrlFromCoverNumber,
   getOpenLibraryAuthorByKey,
@@ -15,37 +15,37 @@ export async function getPredictionDetails(
   fnFormatOpenLibraryCoverUrlFromCoverNumber = formatOpenLibraryCoverUrlFromCoverNumber,
   fnGetOpenLibraryAuthorByKey = getOpenLibraryAuthorByKey,
   fnGetWikipediaSummary = getWikipediaSummary,
-  fnGetWikipediaMedia = getWikipediaMedia,
+  fnGetWikipediaMedia = getWikipediaMedia
 ): Promise<PredictionDetail> {
   let loadedDetails: PredictionDetail = {
     ...prediction,
     book: {
       title: "",
       authors: [],
-      description: ""
+      description: "",
     },
     subject: {
       title: "",
       image_url: "",
-      extract: ""
+      extract: "",
     },
   };
   // TODO: I mean there is a lot to do but rather than a massive chain we could
   // do some stuff concurrently
   const data = await fnGetOpenLibraryWorkById(prediction.openlibraryid);
   if (data.covers.length > 0) {
-    loadedDetails.book.cover_url_lg = fnFormatOpenLibraryCoverUrlFromCoverNumber(
-      data.covers[0], "L"
-    );
-    loadedDetails.book.cover_url_md = fnFormatOpenLibraryCoverUrlFromCoverNumber(
-      data.covers[0], "M"
-    );
-    loadedDetails.book.cover_url_sm = fnFormatOpenLibraryCoverUrlFromCoverNumber(
-      data.covers[0], "S"
-    );
+    loadedDetails.book.cover_url_lg =
+      fnFormatOpenLibraryCoverUrlFromCoverNumber(data.covers[0], "L");
+    loadedDetails.book.cover_url_md =
+      fnFormatOpenLibraryCoverUrlFromCoverNumber(data.covers[0], "M");
+    loadedDetails.book.cover_url_sm =
+      fnFormatOpenLibraryCoverUrlFromCoverNumber(data.covers[0], "S");
   }
   loadedDetails.book.title = data.title;
-  loadedDetails.book.description = typeof data.description === "string" ? data.description : (data.description as any).value;
+  loadedDetails.book.description =
+    typeof data.description === "string"
+      ? data.description
+      : (data.description as any).value;
 
   // TODO: We'll need to change this to load many, but one will do for now
   const author_data = await fnGetOpenLibraryAuthorByKey(

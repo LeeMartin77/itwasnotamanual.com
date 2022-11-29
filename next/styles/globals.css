@@ -15,6 +15,16 @@ a {
   box-sizing: border-box;
 }
 
+.main-container-mobile {
+  padding-top: 8px;
+  padding-bottom: 72px;
+}
+
+.main-container-nonmobile {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
@@ -23,4 +33,84 @@ a {
     color: white;
     background: black;
   }
+}
+
+.stacked-prediction-image-box-short-screen {
+  position: relative;
+  overflow: hidden;
+  max-height: 180px;
+  min-height: 180px;
+}
+
+.stacked-prediction-image-box {
+  position: relative;
+  overflow: hidden;
+  max-height: 240px;
+  min-height: 240px;
+}
+
+.prediction-subject-img {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 100%;
+  min-width: 100%;
+}
+
+.prediction-book-stacked-img {
+  position: absolute;
+  max-height: 50%;
+  bottom: 0;
+  right: 0;
+}
+
+.prediction-quote {
+  padding: 1rem;
+  font-style: italic;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.prediction-quote-start-mark {
+  transform: scaleX(-1);
+}
+
+.prediction-quote-end-mark {
+  transform: scaleY(-1);
+}
+
+.cover-only-prediction-image-box-short-screen {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 180px;
+  min-height: 180px;
+}
+
+.cover-only-prediction-image-box-short-screen > .prediction-book-solo-img {
+  max-width: 100%;
+  max-height: 180px;
+  min-height: 180px;
+}
+
+.cover-only-prediction-image-box {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 240px;
+  min-height: 240px;
+}
+
+.cover-only-prediction-image-box > .prediction-book-solo-img {
+  max-width: 100%;
+  max-height: 240px;
+  min-height: 240px;
+}
+
+.author-header {
+  margin-top: 0;
 }
