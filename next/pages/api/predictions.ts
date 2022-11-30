@@ -1,13 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-
-type Data = {
-  name: string;
-};
+import { Prediction } from "../../types/prediction";
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<{ message: string } | Prediction[]>
 ) {
+  if (req.method !== "GET") {
+    return res.status(400).send({ message: "GET Request only" });
+  }
   // GET
-  res.status(200).json({ name: "John Doe" });
+  const { pageNumber, pageLength } = req.query;
+  res.status(200).json([]);
 }
