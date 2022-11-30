@@ -46,13 +46,13 @@ export function PredictionDetailsComponent({
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
 
-  const [isShort, setShort] = useState(window.innerHeight < 720);
-
-  const updateMedia = () => {
-    setShort(window.innerHeight < 720);
-  };
+  const [isShort, setShort] = useState(true);
 
   useEffect(() => {
+    const updateMedia = () => {
+      setShort(window.innerHeight < 720);
+    };
+    updateMedia();
     window.addEventListener("resize", updateMedia);
     return () => window.removeEventListener("resize", updateMedia);
   }, [setShort]);

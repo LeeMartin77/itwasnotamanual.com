@@ -13,7 +13,6 @@ import React, { useState } from "react";
 import { createPrediction } from "../../functions/createPrediction";
 import { checkOpenLibraryValue } from "../../functions/thirdPartyDataAccess/openlibrary";
 import { checkWikipediaArticle } from "../../functions/thirdPartyDataAccess/wikipedia";
-import "./PredictionSubmissionComponent.css";
 
 export function PredictionSubmissionComponent() {
   const [openlibraryid, setOpenlibraryid] = useState<string>("");

@@ -112,11 +112,15 @@ function VoteControls({
 }
 
 export function PredictionRankingComponent() {
-  const storageUserId = localStorage.getItem(userIdIdentifier);
-  const userId = storageUserId || randomUUID();
-  if (!storageUserId) {
-    localStorage.setItem(userIdIdentifier, userId);
-  }
+  const [userId, setUserId] = useState<null | string>(null);
+  useEffect(() => {
+    const storageUserId = localStorage.getItem(userIdIdentifier);
+    const luserId = storageUserId || randomUUID();
+    if (!storageUserId) {
+      localStorage.setItem(userIdIdentifier, luserId);
+      setUserId(luserId);
+    }
+  }, [setUserId]);
   const [prediction, setPrediction] = useState<Prediction | undefined>(
     undefined
   );

@@ -14,18 +14,15 @@ const theme = createTheme({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
-  const [isDesktop, setDesktop] = useState(
-    window.innerWidth > theme.breakpoints.values.sm
-  );
-
-  const updateMedia = () => {
-    setDesktop(window.innerWidth > theme.breakpoints.values.sm);
-  };
-
+  const [isDesktop, setDesktop] = useState(false);
   useEffect(() => {
+    setDesktop(window.innerWidth > theme.breakpoints.values.sm);
+    const updateMedia = () => {
+      setDesktop(window.innerWidth > theme.breakpoints.values.sm);
+    };
     window.addEventListener("resize", updateMedia);
     return () => window.removeEventListener("resize", updateMedia);
-  });
+  }, [setDesktop]);
 
   const containerClassName = isDesktop
     ? "main-container-nonmobile"
