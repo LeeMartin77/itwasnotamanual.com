@@ -9,8 +9,8 @@ interface PaginatedResult<T> {
 
 interface VoteResult {
   prediction: Prediction;
-  voteToken: string | undefined;
-  hasVote: boolean;
+  vote_token: string | undefined;
+  has_vote: boolean;
 }
 
 export async function getPredictions(
@@ -60,13 +60,13 @@ export async function getPredictionVoteOrRandom(
 
 export async function submitVote({
   userIdentifier,
-  voteToken,
-  pageUrl,
+  vote_token,
+  page_url,
   positive,
 }: {
   userIdentifier: string;
-  voteToken: string;
-  pageUrl: string;
+  vote_token: string;
+  page_url: string;
   positive: boolean;
 }): Promise<void> {
   const response = await fetch(API_ROOT_URL + "/predictionvote/submit", {
@@ -74,7 +74,7 @@ export async function submitVote({
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ userIdentifier, voteToken, pageUrl, positive }),
+    body: JSON.stringify({ userIdentifier, vote_token, page_url, positive }),
   });
   if (!response.ok) {
     throw Error("Something went wrong");
@@ -83,17 +83,17 @@ export async function submitVote({
 
 export async function deleteVote({
   userIdentifier,
-  voteToken,
+  vote_token,
 }: {
   userIdentifier: string;
-  voteToken: string;
+  vote_token: string;
 }): Promise<void> {
   const response = await fetch(API_ROOT_URL + "/predictionvote/delete", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ userIdentifier, voteToken }),
+    body: JSON.stringify({ userIdentifier, vote_token }),
   });
   if (!response.ok) {
     throw Error("Something went wrong");

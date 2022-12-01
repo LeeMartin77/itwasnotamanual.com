@@ -1,16 +1,27 @@
 export interface Prediction {
-  id: string;
+  page_url: string;
   score: number;
   total_votes: number;
-  pageUrl: string;
   openlibraryid: string;
-  // TODO: We should populate this from openlibrary in the lambda
   book_title: string;
   wiki: string;
-  // TODO: We should populate this from wikipedia in the lambda
   wiki_title: string;
   quote?: string;
   moderated: boolean;
+}
+
+export interface PredictionVote {
+  userid: string;
+  prediction: Prediction;
+  vote_token: string;
+  has_vote: boolean;
+}
+
+export interface PredictionVoteStorage {
+  userid: string;
+  page_url: string;
+  vote_token: string;
+  positive?: boolean;
 }
 
 export interface PredictionDetail extends Prediction {

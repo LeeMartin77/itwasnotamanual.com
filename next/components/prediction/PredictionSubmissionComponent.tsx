@@ -133,7 +133,7 @@ export function PredictionSubmissionComponent() {
         quote: quote || undefined,
       })
         .then((prediction) => {
-          window.location.assign("/prediction/" + prediction.pageUrl);
+          window.location.assign("/prediction/" + prediction.page_url);
         })
         .catch((err) => {
           setError(err.message);

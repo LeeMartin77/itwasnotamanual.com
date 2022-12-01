@@ -81,7 +81,7 @@ export function PredictionDetailsComponent({
     <IconButton
       LinkComponent={Link}
       aria-label="share"
-      href={"/prediction/" + prediction.pageUrl}
+      href={"/prediction/" + prediction.page_url}
       style={{ position: "absolute", bottom: 0, left: 0 }}
     >
       <ShareIcon />

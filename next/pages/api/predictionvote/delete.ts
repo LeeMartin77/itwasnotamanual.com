@@ -8,13 +8,11 @@ export default function handler(
     return res.status(400).send({ message: "POST Request only" });
   }
   // POST
-  const { userIdentifier, voteToken } = req.body;
-  if (!userIdentifier || !voteToken) {
-    return res
-      .status(400)
-      .send({
-        message: `Missing required field "userIdentifier" or "voteToken"`,
-      });
+  const { userIdentifier, vote_token } = req.body;
+  if (!userIdentifier || !vote_token) {
+    return res.status(400).send({
+      message: `Missing required field "userIdentifier" or "vote_token"`,
+    });
   }
   // TODO Fling the delete at the DB, and hope
   res.status(200).json({ message: "Deleted" });

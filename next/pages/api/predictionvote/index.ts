@@ -18,6 +18,6 @@ export default function handler(
   // check if user has active vote - if yes, return that
   // if not, check if user has voted on every moderated prediction - if yes, return a random one
   // if moderated, unvoted item, create vote and return that
-  // response: { prediction: randomPrediction, voteToken: newToken, hasVote: true }
+  // response: { prediction: randomPrediction, vote_token: newToken, has_vote: true }
   res.status(500).json({ message: "Not Implemented" });
 }

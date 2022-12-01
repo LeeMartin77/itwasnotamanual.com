@@ -48,7 +48,7 @@ export function PredictionListItemComponent({
     <ListItem>
       <ListItemButton
         component={Link}
-        href={`/prediction/${prediction.pageUrl}`}
+        href={`/prediction/${prediction.page_url}`}
       >
         <ListItemIcon>
           <VoteIndicator sortKey={prediction.sort_key} />

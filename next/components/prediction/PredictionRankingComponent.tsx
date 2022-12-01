@@ -18,19 +18,19 @@ const userIdIdentifier = "itwasntamanualUserId";
 
 function VoteControls({
   userId,
-  voteToken,
+  vote_token,
   canVote,
   loading,
   voteCallback,
   refreshCallback,
 }: {
   userId: string;
-  voteToken: string | undefined;
+  vote_token: string | undefined;
   canVote: boolean;
   loading: boolean;
   voteCallback: (
     userId: string,
-    voteToken: string,
+    vote_token: string,
     positive: boolean | undefined
   ) => any;
   refreshCallback: () => any;
@@ -38,17 +38,17 @@ function VoteControls({
   const choices = {
     positive: {
       label: "Approve",
-      onClick: () => voteCallback(userId, voteToken!, true),
+      onClick: () => voteCallback(userId, vote_token!, true),
       icon: CheckCircleIcon,
     },
     skip: {
       label: "Skip",
-      onClick: () => voteCallback(userId, voteToken!, undefined),
+      onClick: () => voteCallback(userId, vote_token!, undefined),
       icon: SkipNextIcon,
     },
     negative: {
       label: "Disagree",
-      onClick: () => voteCallback(userId, voteToken!, false),
+      onClick: () => voteCallback(userId, vote_token!, false),
       icon: CancelIcon,
     },
     refresh: {
@@ -57,7 +57,7 @@ function VoteControls({
       icon: RefreshIcon,
     },
   };
-  if (canVote && voteToken) {
+  if (canVote && vote_token) {
     return (
       <Card style={{ marginTop: "1rem", width: "100%" }}>
         <CardActions style={{ display: "flex" }}>
@@ -124,24 +124,24 @@ export function PredictionRankingComponent() {
   const [prediction, setPrediction] = useState<Prediction | undefined>(
     undefined
   );
-  const [voteToken, setVoteToken] = useState<string | undefined>(undefined);
+  const [vote_token, setvote_token] = useState<string | undefined>(undefined);
   const [canVote, setCanVote] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
 
   const voteCallback = (
     userId: string,
-    voteToken: string,
+    vote_token: string,
     positive: boolean | undefined
   ) => {
     setLoading(true);
     const promise =
       positive === undefined
-        ? deleteVote({ userIdentifier: userId, voteToken })
+        ? deleteVote({ userIdentifier: userId, vote_token })
         : submitVote({
             userIdentifier: userId,
-            voteToken,
-            pageUrl: prediction!.pageUrl,
+            vote_token,
+            page_url: prediction!.page_url,
             positive,
           });
     promise
@@ -157,14 +157,14 @@ export function PredictionRankingComponent() {
     setLoading(true);
     setError(false);
     return getPredictionVoteOrRandom(userId)
-      .then(({ prediction, voteToken, hasVote }) => {
+      .then(({ prediction, vote_token, has_vote }) => {
         setPrediction(prediction);
-        setVoteToken(voteToken);
-        setCanVote(hasVote);
+        setvote_token(vote_token);
+        setCanVote(has_vote);
         setLoading(false);
       })
       .catch(() => setError(true));
-  }, [setPrediction, setLoading, setError, setVoteToken, setCanVote, userId]);
+  }, [setPrediction, setLoading, setError, setvote_token, setCanVote, userId]);
 
   useEffect(() => {
     loadPredictionVote();
@@ -180,7 +180,7 @@ export function PredictionRankingComponent() {
         RankingControlComponent={
           <VoteControls
             userId={userId}
-            voteToken={voteToken}
+            vote_token={vote_token}
             canVote={canVote}
             loading={loading}
             voteCallback={voteCallback}

@@ -61,20 +61,20 @@ export default async function handler(
 
   const [randombit] = crypto.randomUUID().split("-");
 
-  let pageUrl = bookDetails.title + " " + wikiDetails.title;
-  pageUrl = pageUrl.toLowerCase();
-  pageUrl = pageUrl.replace(/[^a-z0-9 ]/gi, "");
-  pageUrl = pageUrl.replace(/[ ]/gi, "-");
+  let page_url = bookDetails.title + " " + wikiDetails.title;
+  page_url = page_url.toLowerCase();
+  page_url = page_url.replace(/[^a-z0-9 ]/gi, "");
+  page_url = page_url.replace(/[ ]/gi, "-");
 
-  pageUrl = pageUrl + "-" + randombit;
+  page_url = page_url + "-" + randombit;
 
-  pageUrl = encodeURIComponent(pageUrl);
+  page_url = encodeURIComponent(page_url);
 
   const prediction = {
     id: crypto.randomUUID(),
     score: 0,
     total_votes: 0,
-    pageUrl,
+    page_url,
     openlibraryid,
     book_title: bookDetails.title,
     wiki: wiki,
