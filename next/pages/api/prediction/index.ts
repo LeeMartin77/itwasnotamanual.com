@@ -7,7 +7,9 @@ import {
   getWikipediaSummary,
   WikipediaSummaryResponse,
 } from "../../../functions/serversideThirdPartyDataAccess/wikipedia";
+import { CASSANDRA_CLIENT, rowToObject } from "../../../system/storage";
 import { Prediction } from "../../../types/prediction";
+import { randomUUID } from "node:crypto";
 
 export default async function handler(
   req: NextApiRequest,
@@ -42,8 +44,18 @@ export default async function handler(
     });
   }
 
-  //TODO: check for wikiid and openlibraryid item.
-  // if there, just return that with 200
+  const existing = await CASSANDRA_CLIENT.execute(
+    `select * 
+    from itwasnotamanual.prediction 
+    where openlibraryid = ? 
+      and wiki = ? allow filtering;`,
+    [openlibraryid, wiki],
+    { prepare: true }
+  );
+
+  if (existing && existing.rowLength > 0) {
+    return res.status(200).send(rowToObject(existing.first()));
+  }
 
   let bookDetails: OpenLibraryBooksResponse,
     wikiDetails: WikipediaSummaryResponse;
@@ -59,7 +71,7 @@ export default async function handler(
     return res.status(400).send({ message: "Could not get Wiki Details" });
   }
 
-  const [randombit] = crypto.randomUUID().split("-");
+  const [randombit] = randomUUID().split("-");
 
   let page_url = bookDetails.title + " " + wikiDetails.title;
   page_url = page_url.toLowerCase();
@@ -70,11 +82,10 @@ export default async function handler(
 
   page_url = encodeURIComponent(page_url);
 
-  const prediction = {
-    id: crypto.randomUUID(),
+  const prediction: Prediction = {
+    page_url,
     score: 0,
     total_votes: 0,
-    page_url,
     openlibraryid,
     book_title: bookDetails.title,
     wiki: wiki,
@@ -83,7 +94,15 @@ export default async function handler(
     quote,
   };
 
-  // TODO: Save item
+  await CASSANDRA_CLIENT.execute(
+    `insert into 
+    itwasnotamanual.prediction (${Object.keys(prediction).join(",")})
+    values (${Object.keys(prediction)
+      .map(() => "?")
+      .join(",")});`,
+    Object.values(prediction),
+    { prepare: true }
+  );
 
   res.status(200).json(prediction);
 }

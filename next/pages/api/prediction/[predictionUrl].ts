@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { CASSANDRA_CLIENT, rowToObject } from "../../../system/storage";
 import { Prediction } from "../../../types/prediction";
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<{ message: string } | Prediction>
 ) {
@@ -10,5 +11,16 @@ export default function handler(
   }
   // GET
   const { predictionUrl } = req.query;
-  res.status(500).json({ message: "Not Implemented" });
+  const existing = await CASSANDRA_CLIENT.execute(
+    `select * 
+    from itwasnotamanual.prediction 
+    where page_url = ?;`,
+    [predictionUrl],
+    { prepare: true }
+  );
+
+  if (existing && existing.rowLength > 0) {
+    res.status(200).send(rowToObject(existing.first()));
+  }
+  res.status(404).json({ message: "Not Found" });
 }
