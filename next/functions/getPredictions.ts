@@ -14,16 +14,12 @@ interface VoteResult {
 }
 
 export async function getPredictions(
-  lastEvaluated: { [key: string]: string } | undefined = undefined
-): Promise<PaginatedResult<Prediction>> {
-  let predictionsUrl = API_ROOT_URL + "/predictions";
-  if (lastEvaluated) {
-    predictionsUrl +=
-      "?" +
-      Object.keys(lastEvaluated)
-        .map((k) => k + "=" + encodeURI(lastEvaluated[k]))
-        .join("&");
-  }
+  pageNumber: number = 1,
+  pageLength: number = 20
+): Promise<Prediction[]> {
+  let predictionsUrl =
+    API_ROOT_URL +
+    `/predictions?pageNumber=${pageNumber}&pageLength=${pageLength}`;
   const response = await fetch(predictionsUrl);
   if (!response.ok) {
     throw Error("Something went wrong");

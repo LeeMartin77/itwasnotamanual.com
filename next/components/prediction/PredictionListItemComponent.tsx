@@ -19,20 +19,15 @@ export function stringifyVoteNumber(rawNum: number): string {
   return `${thousands}.${hundreds}k`;
 }
 
-function VoteIndicator({ sortKey }: { sortKey: string }): JSX.Element {
-  const splitchar = "~";
-
-  const offset = 5000000;
-  const [number] = sortKey.split(splitchar);
-  const parsedVotes = parseInt(number) - offset;
+function VoteIndicator({ score }: { score: number }): JSX.Element {
   return (
     <>
-      {parsedVotes >= 0 ? (
+      {score >= 0 ? (
         <ArrowDropUpIcon style={{ color: "green" }} />
       ) : (
         <ArrowDropDownIcon style={{ color: "red" }} />
       )}{" "}
-      {stringifyVoteNumber(parsedVotes)}
+      {stringifyVoteNumber(score)}
     </>
   );
 }
@@ -51,7 +46,7 @@ export function PredictionListItemComponent({
         href={`/prediction/${prediction.page_url}`}
       >
         <ListItemIcon>
-          <VoteIndicator sortKey={prediction.sort_key} />
+          <VoteIndicator score={prediction.score} />
         </ListItemIcon>
         <ListItemText>
           {prediction.wiki_title} in {prediction.book_title}
