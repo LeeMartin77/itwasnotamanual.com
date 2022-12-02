@@ -9,13 +9,15 @@ import {
 import { useEffect, useState } from "react";
 
 const startDialogueSeenKey = "StartDialogueSeen";
-const currentStartDialogueValue = "v1.0";
+const currentStartDialogueValue = "v1.1";
 
 export function FirstTimeModalComponent() {
   const [stateDialogValue, setStateDialogValue] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     setStateDialogValue(localStorage.getItem(startDialogueSeenKey));
-  }, [setStateDialogValue]);
+    setLoading(false);
+  }, [setStateDialogValue, setLoading]);
   const handleClose = () => {
     localStorage.setItem(startDialogueSeenKey, currentStartDialogueValue);
     setStateDialogValue(currentStartDialogueValue);
@@ -23,20 +25,18 @@ export function FirstTimeModalComponent() {
   return (
     <Dialog
       onClose={handleClose}
-      open={stateDialogValue !== currentStartDialogueValue}
+      open={!loading && stateDialogValue !== currentStartDialogueValue}
     >
       <DialogTitle>Welcome!</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          <p>
-            This simple site is about judging predictions from various novels
-            against wikipedia articles. You'll be presented two options for each
-            prediction, and must decide if the prediction was accurate or not.
-          </p>
-          <p>
-            You can also browse the list of predictions in rank order, or submit
-            a prediction yourself!
-          </p>
+          This simple site is about judging predictions from various novels
+          against wikipedia articles. You'll be presented two options for each
+          prediction, and must decide if the prediction was accurate or not.
+        </DialogContentText>
+        <DialogContentText>
+          You can also browse the list of predictions in rank order, or submit a
+          prediction yourself!
         </DialogContentText>
       </DialogContent>
       <DialogActions>
