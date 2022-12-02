@@ -19,5 +19,23 @@ export default async function handler(
     [pageLength],
     { prepare: true }
   );
-  res.status(200).send(existing.rows.map(rowToObject) as Prediction[]);
+  const existingScores = await CASSANDRA_CLIENT.execute(
+    `select * 
+    from itwasnotamanual.prediction_score
+    LIMIT ?;`,
+    [pageLength],
+    { prepare: true }
+  );
+  res.status(200).send(
+    existing.rows.map((r) => {
+      const scoring = existingScores.rows.find(
+        (rs) => rs.get("page_url") === r.get("page_url")
+      );
+      return {
+        ...rowToObject(r),
+        score: scoring?.get("score") ?? 0,
+        total_votes: scoring?.get("total_votes") ?? 0,
+      };
+    }) as Prediction[]
+  );
 }

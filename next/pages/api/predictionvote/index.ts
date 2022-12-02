@@ -30,9 +30,9 @@ export default async function handler(
     { prepare: true }
   );
 
-  const existingVotes = existing.rows.map(
-    rowToObject
-  ) as PredictionVoteStorage[];
+  const existingVotes = existing.rows
+    .filter((x) => x !== null)
+    .map(rowToObject) as PredictionVoteStorage[];
 
   const index = existingVotes.findIndex(
     (x) => x.positive === null || x.positive === undefined
@@ -63,9 +63,7 @@ export default async function handler(
       [],
       { prepare: true }
     )
-  ).rows.map(
-    (x) => (rowToObject(x) as { page_url: string }).page_url
-  ) as string[];
+  ).rows.map((x) => x.get("page_url")) as string[];
 
   const availableVotes = predictionPageUrls.filter(
     (x) => existingVotes.findIndex((y) => y.page_url === x) === -1

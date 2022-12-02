@@ -3,8 +3,6 @@ CREATE KEYSPACE IF NOT EXISTS itwasnotamanual
 
 CREATE TABLE IF NOT EXISTS itwasnotamanual.prediction(
   page_url text PRIMARY KEY,
-  score int,
-  total_votes int,
   openlibraryid text,
   book_title text,
   wiki text,
@@ -13,10 +11,17 @@ CREATE TABLE IF NOT EXISTS itwasnotamanual.prediction(
   moderated boolean
 );
 
-CREATE INDEX IF NOT EXISTS ON itwasnotamanual.prediction (score);
 CREATE INDEX IF NOT EXISTS ON itwasnotamanual.prediction (openlibraryid);
 CREATE INDEX IF NOT EXISTS ON itwasnotamanual.prediction (wiki);
 CREATE INDEX IF NOT EXISTS ON itwasnotamanual.prediction (moderated);
+
+CREATE TABLE IF NOT EXISTS itwasnotamanual.prediction_score(
+  page_url text PRIMARY KEY,
+  score counter,
+  total_votes counter,
+);
+
+CREATE INDEX IF NOT EXISTS ON itwasnotamanual.prediction_score (score);
 
 CREATE TABLE IF NOT EXISTS itwasnotamanual.prediction_vote(
   user_id text,

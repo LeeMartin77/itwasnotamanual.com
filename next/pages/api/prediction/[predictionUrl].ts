@@ -20,7 +20,24 @@ export default async function handler(
   );
 
   if (existing && existing.rowLength > 0) {
-    res.status(200).send(rowToObject(existing.first()));
+    const prediction = rowToObject(existing.first()) as any;
+    const predictionScore = rowToObject(
+      (
+        await CASSANDRA_CLIENT.execute(
+          `select * 
+      from itwasnotamanual.prediction_score
+      where page_url = ?;`,
+          [predictionUrl],
+          { prepare: true }
+        )
+      ).first()
+    ) as any;
+
+    return res.status(200).send({
+      ...prediction,
+      score: predictionScore.score,
+      total_votes: predictionScore.total_votes,
+    });
   }
   res.status(404).json({ message: "Not Found" });
 }

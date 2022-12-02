@@ -82,10 +82,8 @@ export default async function handler(
 
   page_url = encodeURIComponent(page_url);
 
-  const prediction: Prediction = {
+  const prediction = {
     page_url,
-    score: 0,
-    total_votes: 0,
     openlibraryid,
     book_title: bookDetails.title,
     wiki: wiki,
@@ -104,5 +102,13 @@ export default async function handler(
     { prepare: true }
   );
 
-  res.status(200).json(prediction);
+  await CASSANDRA_CLIENT.execute(
+    `update itwasnotamanual.prediction_score
+    set score = score + 0, total_votes = total_votes + 0
+    where page_url = ?;`,
+    [page_url],
+    { prepare: true }
+  );
+
+  res.status(200).json({ ...prediction, score: 0, total_votes: 0 });
 }
