@@ -1,8 +1,14 @@
+import { randomUUID } from "node:crypto";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { CASSANDRA_CLIENT, rowToObject } from "../../../system/storage";
+import {
+  PredictionVote,
+  PredictionVoteStorage,
+} from "../../../types/prediction";
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ message: string }>
+  res: NextApiResponse<{ message: string } | PredictionVote>
 ) {
   if (req.method !== "POST") {
     return res.status(400).send({ message: "POST Request only" });
@@ -16,8 +22,97 @@ export default function handler(
   }
   // Logic flow:
   // check if user has active vote - if yes, return that
-  // if not, check if user has voted on every moderated prediction - if yes, return a random one
-  // if moderated, unvoted item, create vote and return that
-  // response: { prediction: randomPrediction, vote_token: newToken, has_vote: true }
-  res.status(500).json({ message: "Not Implemented" });
+  const existing = await CASSANDRA_CLIENT.execute(
+    `select * 
+    from itwasnotamanual.prediction_vote
+    where user_id = ?;`,
+    [userIdentifier],
+    { prepare: true }
+  );
+
+  const existingVotes = existing.rows.map(
+    rowToObject
+  ) as PredictionVoteStorage[];
+
+  const index = existingVotes.findIndex(
+    (x) => x.positive === null || x.positive === undefined
+  );
+
+  if (index > -1) {
+    const voteStorage = existingVotes[index];
+    const prediction = await CASSANDRA_CLIENT.execute(
+      `select * 
+      from itwasnotamanual.prediction
+      where page_url = ?;`,
+      [voteStorage.page_url],
+      { prepare: true }
+    );
+    const vote: PredictionVote = {
+      userid: voteStorage.user_id,
+      prediction: rowToObject(prediction.first()),
+      vote_token: voteStorage.vote_token,
+      has_vote: true,
+    };
+    return res.status(200).json(vote);
+  }
+  const predictionPageUrls = (
+    await CASSANDRA_CLIENT.execute(
+      `select page_url
+    from itwasnotamanual.prediction
+    WHERE moderated = true ALLOW FILTERING;`,
+      [],
+      { prepare: true }
+    )
+  ).rows.map(
+    (x) => (rowToObject(x) as { page_url: string }).page_url
+  ) as string[];
+
+  const availableVotes = predictionPageUrls.filter(
+    (x) => existingVotes.findIndex((y) => y.page_url === x) === -1
+  );
+  if (availableVotes.length > 0) {
+    // if moderated, unvoted item, create vote and return that
+    const predictionUrl =
+      availableVotes[Math.floor(Math.random() * availableVotes.length)];
+    const prediction = await CASSANDRA_CLIENT.execute(
+      `select * 
+      from itwasnotamanual.prediction
+      where page_url = ?;`,
+      [predictionUrl],
+      { prepare: true }
+    );
+    const newVote: PredictionVoteStorage = {
+      user_id: userIdentifier,
+      page_url: predictionUrl,
+      vote_token: randomUUID(),
+    };
+    await CASSANDRA_CLIENT.execute(
+      `insert into itwasnotamanual.prediction_vote (user_id, page_url, vote_token)
+      values (?, ?, ?);`,
+      [newVote.user_id, newVote.page_url, newVote.vote_token],
+      { prepare: true }
+    );
+    return res.status(200).json({
+      userid: userIdentifier,
+      prediction: rowToObject(prediction.first()),
+      has_vote: true,
+      vote_token: newVote.vote_token,
+    });
+  }
+  // random moderated item
+  const predictionUrl =
+    predictionPageUrls[Math.floor(Math.random() * predictionPageUrls.length)];
+  const prediction = await CASSANDRA_CLIENT.execute(
+    `select * 
+    from itwasnotamanual.prediction
+    where page_url = ?;`,
+    [predictionUrl],
+    { prepare: true }
+  );
+
+  res.status(200).json({
+    userid: userIdentifier,
+    prediction: rowToObject(prediction.first()),
+    has_vote: false,
+  });
 }

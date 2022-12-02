@@ -118,8 +118,8 @@ export function PredictionRankingComponent() {
     const luserId = storageUserId || randomUUID();
     if (!storageUserId) {
       localStorage.setItem(userIdIdentifier, luserId);
-      setUserId(luserId);
     }
+    setUserId(luserId);
   }, [setUserId]);
   const [prediction, setPrediction] = useState<Prediction | undefined>(
     undefined
@@ -156,14 +156,16 @@ export function PredictionRankingComponent() {
   const loadPredictionVote = useCallback(() => {
     setLoading(true);
     setError(false);
-    return getPredictionVoteOrRandom(userId)
-      .then(({ prediction, vote_token, has_vote }) => {
-        setPrediction(prediction);
-        setvote_token(vote_token);
-        setCanVote(has_vote);
-        setLoading(false);
-      })
-      .catch(() => setError(true));
+    if (userId) {
+      return getPredictionVoteOrRandom(userId)
+        .then(({ prediction, vote_token, has_vote }) => {
+          setPrediction(prediction);
+          setvote_token(vote_token);
+          setCanVote(has_vote);
+          setLoading(false);
+        })
+        .catch(() => setError(true));
+    }
   }, [setPrediction, setLoading, setError, setvote_token, setCanVote, userId]);
 
   useEffect(() => {
@@ -175,11 +177,11 @@ export function PredictionRankingComponent() {
       <PredictionDetailsComponent
         prediction={prediction}
         hasLink={true}
-        predictionLoading={loading}
+        predictionLoading={loading || !userId}
         predictionError={error}
         RankingControlComponent={
           <VoteControls
-            userId={userId}
+            userId={userId!}
             vote_token={vote_token}
             canVote={canVote}
             loading={loading}

@@ -13,12 +13,12 @@ export interface Prediction {
 export interface PredictionVote {
   userid: string;
   prediction: Prediction;
-  vote_token: string;
+  vote_token?: string;
   has_vote: boolean;
 }
 
 export interface PredictionVoteStorage {
-  userid: string;
+  user_id: string;
   page_url: string;
   vote_token: string;
   positive?: boolean;
