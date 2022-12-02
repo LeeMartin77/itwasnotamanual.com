@@ -20,11 +20,11 @@ CREATE INDEX IF NOT EXISTS ON itwasnotamanual.prediction (moderated);
 
 CREATE TABLE IF NOT EXISTS itwasnotamanual.prediction_vote(
   user_id text,
-  page_url text,
   vote_token text,
+  page_url text,
   positive boolean,
-  PRIMARY KEY ((user_id), page_url)
+  PRIMARY KEY ((user_id), vote_token)
 );
 
-CREATE INDEX IF NOT EXISTS ON itwasnotamanual.prediction_vote (vote_token);
+CREATE INDEX IF NOT EXISTS ON itwasnotamanual.prediction_vote (page_url);
 CREATE INDEX IF NOT EXISTS ON itwasnotamanual.prediction_vote (positive);

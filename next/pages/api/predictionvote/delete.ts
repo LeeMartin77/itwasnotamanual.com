@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { CASSANDRA_CLIENT } from "../../../system/storage";
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<{ message: string }>
 ) {
@@ -14,6 +15,11 @@ export default function handler(
       message: `Missing required field "userIdentifier" or "vote_token"`,
     });
   }
-  // TODO Fling the delete at the DB, and hope
+  await CASSANDRA_CLIENT.execute(
+    `delete from itwasnotamanual.prediction_vote
+    WHERE user_id = ? and vote_token = ?;`,
+    [userIdentifier, vote_token],
+    { prepare: true }
+  );
   res.status(200).json({ message: "Deleted" });
 }
