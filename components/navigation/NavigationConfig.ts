@@ -2,27 +2,27 @@ import { FormatListBulleted, Shuffle, Send, Info } from "@mui/icons-material";
 
 export const navigationConfig = [
   {
-    label: "Rank",
+    label: "List",
     route: "/",
-    icon: Shuffle,
-    mobileHidden: false
+    icon: FormatListBulleted,
+    mobileHidden: false,
   },
   {
-    label: "List",
-    route: "/predictions",
-    icon: FormatListBulleted,
-    mobileHidden: false
+    label: "Rank",
+    route: "/rank",
+    icon: Shuffle,
+    mobileHidden: false,
   },
   {
     label: "Submit",
     route: "/submit",
     icon: Send,
-    mobileHidden: true
+    mobileHidden: true,
   },
   {
     label: "About",
     route: "/about",
     icon: Info,
-    mobileHidden: true
-  }
-]
+    mobileHidden: true,
+  },
+];
