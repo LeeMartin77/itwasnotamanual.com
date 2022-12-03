@@ -1,3 +1,18 @@
+export interface StoredPrediction {
+  page_url: string;
+  openlibraryid: string;
+  book_title: string;
+  wiki: string;
+  wiki_title: string;
+  quote?: string;
+  moderated: boolean;
+}
+export interface StoredPredictionScore {
+  page_url: string;
+  score: number;
+  total_votes: number;
+}
+
 export interface Prediction {
   page_url: string;
   score: number;
