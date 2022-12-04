@@ -59,10 +59,10 @@ export default function Predictions({
   return (
     <>
       <Head>
-        <title>It Was Not a Manual :: All Predicions</title>
+        <title>It Was Not a Manual :: Cataloguing the Machine</title>
         <meta
           name="description"
-          content="A ranked list of all the predictions in the database."
+          content="Welcome! This simple site is about judging predictions from various novels against wikipedia articles."
         />
         <meta property="og:image" content="/logo512.png" />
       </Head>
