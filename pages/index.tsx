@@ -39,7 +39,7 @@ export const getServerSideProps = async () => {
     existingScores.rows.map(rowToObject) as StoredPredictionScore[]
   )
     .filter((s) => predictionsInList.has(s.page_url))
-    .sort((a, b) => a.score - b.score);
+    .sort((a, b) => b.score - a.score);
   return {
     props: {
       mappedPredictions,
