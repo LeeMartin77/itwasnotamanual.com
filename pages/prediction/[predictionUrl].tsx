@@ -1,40 +1,11 @@
+import Head from "next/head";
 import { InferGetServerSidePropsType } from "next/types";
-import { useEffect, useState } from "react";
 import { PredictionDetailsComponent } from "../../components/prediction/PredictionDetailsComponent";
-import { getPredictionFromUrl } from "../../functions/getPredictions";
-import { Prediction } from "../../types/prediction";
-
-function PredictionRouteChildComponent({
-  predictionUrl,
-}: {
-  predictionUrl: string;
-}) {
-  const [prediction, setPrediction] = useState<Prediction | undefined>(
-    undefined
-  );
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (!predictionUrl) {
-      return window.location.assign("/");
-    }
-    getPredictionFromUrl(predictionUrl)
-      .then((pred) => {
-        setPrediction(pred);
-        setLoading(false);
-      })
-      .catch(() => setError(true));
-  }, [setPrediction, setLoading, setError, predictionUrl]);
-
-  return (
-    <PredictionDetailsComponent
-      prediction={prediction}
-      predictionLoading={loading}
-      predictionError={error}
-    />
-  );
-}
+import { CASSANDRA_CLIENT, rowToObject } from "../../system/storage";
+import {
+  StoredPrediction,
+  StoredPredictionScore,
+} from "../../types/prediction";
 
 export const getServerSideProps = async ({
   params: { predictionUrl },
@@ -46,15 +17,69 @@ export const getServerSideProps = async ({
       notFound: true,
     };
   }
+  const existing = await CASSANDRA_CLIENT.execute(
+    `select * 
+    from itwasnotamanual.prediction 
+    where page_url = ?;`,
+    [predictionUrl],
+    { prepare: true }
+  );
+
+  if (existing && existing.rowLength > 0) {
+    const prediction = rowToObject(existing.first()) as StoredPrediction;
+    const predictionScore = rowToObject(
+      (
+        await CASSANDRA_CLIENT.execute(
+          `select page_url, cast(score as int) as score, cast(total_votes as int) as total_votes
+      from itwasnotamanual.prediction_score
+      where page_url = ?;`,
+          [predictionUrl],
+          { prepare: true }
+        )
+      ).first()
+    ) as StoredPredictionScore;
+
+    return {
+      props: {
+        prediction: {
+          ...prediction,
+          score: predictionScore.score,
+          total_votes: predictionScore.total_votes,
+        },
+      },
+    };
+  }
+
   return {
-    props: {
-      predictionUrl,
-    },
+    notFound: true,
   };
 };
 
 export default function Predictions({
-  predictionUrl,
+  prediction,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  return <PredictionRouteChildComponent predictionUrl={predictionUrl} />;
+  return (
+    <>
+      <Head>
+        <title>
+          {prediction.wiki_title} in {prediction.book_title} :: It Was Not a
+          Manual
+        </title>
+        <meta
+          name="description"
+          content={`${prediction.wiki_title} in ${
+            prediction.book_title
+          } - it was not a manual.${
+            prediction.quote ? ` "` + prediction.quote + `"` : ""
+          }`}
+        />
+        <meta property="og:image" content="/logo512.png" />
+      </Head>
+      <PredictionDetailsComponent
+        prediction={prediction}
+        predictionLoading={false}
+        predictionError={false}
+      />
+    </>
+  );
 }

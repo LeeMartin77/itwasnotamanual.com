@@ -1,6 +1,6 @@
 import { ReactElement, useEffect, useState } from "react";
 import { getPredictionDetails } from "../../functions/getPredictionDetails";
-import { Prediction, PredictionDetail } from "../../../types/prediction";
+import { Prediction, PredictionDetail } from "../../types/prediction";
 import {
   Alert,
   Box,
@@ -97,13 +97,13 @@ export function PredictionDetailsComponent({
               : "Loading Prediction"
           }
           subheader={
-            !loading &&
-            !error &&
-            predictionDetail &&
-            "Written by " +
-              predictionDetail.book.authors
-                .map((x) => x.personal_name)
-                .join(", ")
+            !loading && !error
+              ? predictionDetail &&
+                "Written by " +
+                  predictionDetail.book.authors
+                    .map((x) => x.personal_name)
+                    .join(", ")
+              : "Loading author..."
           }
         />
         <CardContent>
@@ -173,25 +173,24 @@ export function PredictionDetailsComponent({
                     {prediction && hasLink && shareButton}
                   </Box>
                 )}
-
-              {predictionDetail.quote && (
-                <Typography
-                  style={{ marginTop: 16 }}
-                  variant="body1"
-                  className="prediction-quote"
-                >
-                  <FormatQuoteIcon
-                    className="prediction-quote-start-mark"
-                    fontSize="small"
-                  />
-                  {predictionDetail.quote}
-                  <FormatQuoteIcon
-                    className="prediction-quote-end-mark"
-                    fontSize="small"
-                  />
-                </Typography>
-              )}
             </>
+          )}
+          {prediction && prediction.quote && (
+            <Typography
+              style={{ marginTop: 16 }}
+              variant="body1"
+              className="prediction-quote"
+            >
+              <FormatQuoteIcon
+                className="prediction-quote-start-mark"
+                fontSize="small"
+              />
+              {prediction.quote}
+              <FormatQuoteIcon
+                className="prediction-quote-end-mark"
+                fontSize="small"
+              />
+            </Typography>
           )}
         </CardContent>
         {RankingControlComponent}
