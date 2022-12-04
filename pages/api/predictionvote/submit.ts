@@ -11,7 +11,7 @@ export default async function handler(
   }
   // POST
   const { userIdentifier, vote_token, positive } = req.body;
-  if (!userIdentifier || !vote_token || !positive) {
+  if (!userIdentifier || !vote_token || positive === undefined) {
     return res.status(400).send({
       message: `Missing required field "userIdentifier", "vote_token"`,
     });
