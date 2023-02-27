@@ -31,7 +31,7 @@ export function FirstTimeModalComponent() {
       <DialogContent>
         <DialogContentText>
           This simple site is about judging predictions from various novels
-          against wikipedia articles. You'll be presented two options for each
+          against wikipedia articles. You&apos;ll be presented two options for each
           prediction, and must decide if the prediction was accurate or not.
         </DialogContentText>
         <DialogContentText>

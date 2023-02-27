@@ -33,11 +33,11 @@ export default function About() {
         <CardContent>
           <p>
             This website was thrown together out of a mix of boredom and a
-            desire to thumb my nose at the world a little. It's not intended to
-            be taken seriously, however it's certainly a little bit concerning.
+            desire to thumb my nose at the world a little. It&apos;s not intended to
+            be taken seriously, however it&apos;s certainly a little bit concerning.
           </p>
           <p>
-            This site literally wouldn't be possible without the fantastic
+            This site literally wouldn&apos;t be possible without the fantastic
             resources of the Wikipedia and Open Library APIs - show them some
             love.
           </p>
